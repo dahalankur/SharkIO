@@ -14,60 +14,60 @@ class GameObject():
         Initialize the GameObject with the supplied position, radius, color, 
         and type
         """
-        self.types = ['virus', 'food', 'chunk'] # list of allowed types
-        if type.strip() not in self.types:
+        self.__types = ['virus', 'food', 'chunk'] # list of allowed types
+        if type.strip() not in self.__types:
             raise RuntimeError('Invalid GameObject type instantiation')
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.radius = radius
-        self.color = color
-        self.type = type
+        self.__pos_x = pos_x
+        self.__pos_y = pos_y
+        self.__radius = radius
+        self.__color = color
+        self.__type = type
 
     def get_pos(self):
         """
         Return the current position of the GameObject instance as a 2-tuple
         """
-        return (self.pos_x, self.pos_y)
+        return (self.__pos_x, self.__pos_y)
 
     def set_pos(self, pos_x, pos_y):
         """
         Set the current position of the GameObject instance to the x and y 
         positions supplied as the arguments
         """
-        self.pos_x = pos_x
-        self.pos_y = pos_y
+        self.__pos_x = pos_x
+        self.__pos_y = pos_y
     
     def get_type(self):
         """
         Return the type of the GameObject instance
         Note: The type can be one of 'virus', 'food', or 'chunk'
         """
-        return self.type
+        return self.__type
     
     def get_radius(self):
         """
         Return the radius of the GameObject instance
         """
-        return self.radius
+        return self.__radius
     
     def set_radius(self, radius):
         """
         Set the radius of the GameObject instance to the radius supplied as the
         argument
         """
-        self.radius = radius
+        self.__radius = radius
     
     def get_color(self):
         """
         Return the color of the GameObject instance
         """
-        return self.color
+        return self.__color
     
     def set_color(self, color):
         """
         Set the color of the GameObject instance to the color supplied as the 
         argument
         """
-        self.color = color
+        self.__color = color
     
     
