@@ -22,6 +22,24 @@ class GameObject():
         self.__radius = radius
         self.__color = color
         self.__type = type
+    
+    def is_virus(self):
+        """
+        Return true if the GameObject instance is a virus, and false otherwise
+        """
+        return self.__type == 'virus'
+    
+    def is_food(self):
+        """
+        Return true if the GameObject instance is a food, and false otherwise
+        """
+        return self.__type == 'food'
+
+    def is_chunk(self):
+        """
+        Return true if the GameObject instance is a chunk, and false otherwise
+        """
+        return self.__type == 'chunk'
 
     def get_pos(self):
         """
