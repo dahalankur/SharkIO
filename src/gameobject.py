@@ -96,15 +96,16 @@ class GameObject():
         GameObject instance supplied as the argument
         """
         other_object_pos_x, other_object_pos_y = otherGameObject.get_pos()
-        return sqrt((self.__pos_x - other_object_pos_x) ** 2 + 
+        return sqrt((self.__pos_x - other_object_pos_x) ** 2 + \
                     (self.__pos_y - other_object_pos_y) ** 2)
     
     def is_colliding(self, otherGameObject):
         """
         Return True if this GameObject instance is colliding with the other 
         GameObject instance supplied as the argument, and False otherwise
+        Note: This returns True immediately when the game objects start touching
+              and is OK to use for a player consuming food, but not optimal 
+              for a player trying to "eat" another player
         """
         distance = self._distance_from(otherGameObject)
         return distance < (self.__radius + otherGameObject.get_radius())
-    
-    
