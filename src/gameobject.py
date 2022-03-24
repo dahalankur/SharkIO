@@ -4,6 +4,8 @@ Implements a GameObject class
 Written by Ankur Dahal <adahal01@cs.tufts.edu> on 03/16/2022
 """
 
+from math import sqrt
+
 class GameObject():
     """
     An instance of this class represents a game object, and can be 
@@ -87,5 +89,22 @@ class GameObject():
         argument
         """
         self.__color = color
+    
+    def _distance_from(self, otherGameObject):
+        """
+        Return the distance between this GameObject instance and the other 
+        GameObject instance supplied as the argument
+        """
+        other_object_pos_x, other_object_pos_y = otherGameObject.get_pos()
+        return sqrt((self.__pos_x - other_object_pos_x) ** 2 + 
+                    (self.__pos_y - other_object_pos_y) ** 2)
+    
+    def is_colliding(self, otherGameObject):
+        """
+        Return True if this GameObject instance is colliding with the other 
+        GameObject instance supplied as the argument, and False otherwise
+        """
+        distance = self._distance_from(otherGameObject)
+        return distance < (self.__radius + otherGameObject.get_radius())
     
     
