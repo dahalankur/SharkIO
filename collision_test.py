@@ -66,6 +66,12 @@ while running:
         color = GREEN
 
     # draw the circles
+    
+    # IDEA: for the actual game, iterate over the gameobject list 
+    #       in the current player's camera view only, and call a general draw function passing in each object
+    #       The draw function will call pygame.draw.circle(screen, object.get_color(), object.get_pos(), object.get_radius()).
+    # also maybe render players that are larger at the end so that when they overlap, the bigger circle will be on top. (Is this how it works on pygame? Have to investigate.)
+
     pygame.draw.circle(screen, color, (posx, posy), radius) # player
     pygame.draw.circle(screen, (0, 255, 255), (object_posx, object_posy), radius2) # stationary circle
     pygame.display.flip()
