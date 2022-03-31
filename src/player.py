@@ -1,5 +1,5 @@
 """
-gameobject.py
+player.py
 Implements a Player class
 """
 
@@ -17,13 +17,13 @@ class Player():
 
     def add_chunk(self, chunk):
       """
-      Adds the chunk with the given chunk_id to the chunks_list
+      Adds the given chunk to the chunks_list
       """
       self.__chunks_list.append(chunk)
 
     def remove_chunk(self, chunk_id):
       """
-      Removes the chunk with the given chunk_id to the chunks_list
+      Removes the chunk with the given chunk_id from the chunks_list
       """
       for chunk in self.__chunks_list:
         if chunk.get_id() == chunk_id:
