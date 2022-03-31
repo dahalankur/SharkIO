@@ -137,6 +137,7 @@ def tests():
     assert(not player1.is_colliding(player2))
     assert(not player1.is_colliding(food1))
     assert(not player1.is_colliding(food2))
+    assert(not food1.is_colliding(food2))
 
     assert(virus.get_color() == (0, 255, 0))
     assert(player1.get_color() == (200, 0, 0))
@@ -152,6 +153,14 @@ def tests():
     assert(player2.is_chunk())
     assert(food1.is_food())
     assert(food2.is_food())
+
+    assert(food1.get_radius() == 5)
+    assert(food2.get_radius() == 1)
+    assert(virus.get_radius() == 4)
+
+    assert(player1.get_pos() == (100, 100))
+    assert(player2.get_pos() == (200, 100))
+    assert(virus.get_pos() == (100, 102.345))
 
 if __name__ == '__main__':
     tests()
