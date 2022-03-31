@@ -1,5 +1,5 @@
 """
-gameobject.py
+player.py
 Implements a Player class
 """
 import uuid

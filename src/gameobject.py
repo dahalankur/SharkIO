@@ -5,6 +5,7 @@ Written by Ankur Dahal <adahal01@cs.tufts.edu> on 03/16/2022
 """
 
 from math import sqrt
+import random
 
 class GameObject():
     """
@@ -118,3 +119,39 @@ class GameObject():
         """
         distance = self.__distance_from(otherGameObject)
         return distance < (self.__radius + otherGameObject.get_radius())
+
+
+def tests():
+    virus = GameObject(100, 102.345, 4, (0, 255, 0), 'virus', \
+                       random.randint(1, 10))
+    player1 = GameObject(100, 100, 3, (200, 0, 0), 'chunk', \
+                        random.randint(1 , 2))
+    player2 = GameObject(200, 100, 5, (200, 0, 222), 'chunk', \
+                        random.randint(1 , 200))
+    food1 = GameObject(2, 100, 5, (200, 222, 222), 'food', \
+                        random.randint(1 , 200))
+    food2 = GameObject(23, 10, 1, (1, 1, 222), 'food', \
+                        random.randint(1 , 200))
+    
+    assert(player1.is_colliding(virus))
+    assert(not player1.is_colliding(player2))
+    assert(not player1.is_colliding(food1))
+    assert(not player1.is_colliding(food2))
+
+    assert(virus.get_color() == (0, 255, 0))
+    assert(player1.get_color() == (200, 0, 0))
+
+    assert(virus.get_type() == 'virus')
+    assert(player1.get_type() == 'chunk')
+    assert(player2.get_type() == 'chunk')
+    assert(food1.get_type() == 'food')
+    assert(food2.get_type() == 'food')
+
+    assert(virus.is_virus())
+    assert(player1.is_chunk())
+    assert(player2.is_chunk())
+    assert(food1.is_food())
+    assert(food2.is_food())
+
+if __name__ == '__main__':
+    tests()
