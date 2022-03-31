@@ -5,6 +5,7 @@ Written by Ellis Brown <ebrown26@cs.tufts.edu> on 3/31/2022
 """
 import uuid
 from gameobject import GameObject 
+from player import Player
 class GameBoard():
     """
     An instance of this class tracks all players and game objects
@@ -86,6 +87,21 @@ def tests():
     assert objects[chunk.get_id()] == chunk
     assert objects[chunk.get_id()].get_type() == 'chunk'
     # Test that players can be added to the gameboard
+    player1 = Player(unique_id = uuid.uuid4())
+    player2 = Player(unique_id = uuid.uuid4())
+    # Add the players to the gameboard
+    gb.add_player(player1)
+    assert len (gb.get_players()) == 1
+    gb.add_player(player2)
+    assert len (gb.get_players()) == 2
+    players = gb.get_players()
+    assert players[player1.get_id()] == player1
+    assert players[player2.get_id()] == player2
+    # Test that players can be removed from the gameboard
+    gb.remove_player(player1)
+    assert len (gb.get_players()) == 1
+    assert players[player2.get_id()] == player2
+
     
     
 
