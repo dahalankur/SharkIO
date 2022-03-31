@@ -90,7 +90,7 @@ class GameObject():
         """
         self.__color = color
     
-    def _distance_from(self, otherGameObject):
+    def __distance_from(self, otherGameObject):
         """
         Return the distance between this GameObject instance and the other 
         GameObject instance supplied as the argument
@@ -107,5 +107,5 @@ class GameObject():
               and is OK to use for a player consuming food, but not optimal 
               for a player trying to "eat" another player
         """
-        distance = self._distance_from(otherGameObject)
+        distance = self.__distance_from(otherGameObject)
         return distance < (self.__radius + otherGameObject.get_radius())
