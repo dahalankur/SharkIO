@@ -11,10 +11,12 @@ class GameObject():
     An instance of this class represents a game object, and can be 
     of type virus, food, or a chunk
     """
-    def __init__(self, pos_x, pos_y, radius, color, type):
+    def __init__(self, pos_x, pos_y, radius, color, type, id):
         """
-        Initialize the GameObject with the supplied position, radius, color, 
-        and type
+        Initialize the GameObject instance with the supplied position, radius,
+        color, type, and a unique ID.
+        Note: It is an invariant that the ID must be unique for each gameobject
+              instantiated
         """
         self.__types = ['virus', 'food', 'chunk'] # list of allowed types
         if type.strip() not in self.__types:
@@ -24,6 +26,7 @@ class GameObject():
         self.__radius = radius
         self.__color = color
         self.__type = type
+        self.__id = id
     
     def is_virus(self):
         """
@@ -42,6 +45,12 @@ class GameObject():
         Return true if the GameObject instance is a chunk, and false otherwise
         """
         return self.__type == 'chunk'
+
+    def get_id(self):
+        """
+        Return the unique id associated with this GameObject instance
+        """
+        return self.__id
 
     def get_pos(self):
         """
