@@ -15,14 +15,16 @@ class Player():
       self.__chunks_list = chunks_list
       self.__camera_view = camera_view
 
-    def add_chunk(self, chunk_id):
+    def add_chunk(self, chunk):
       """
       Adds the chunk with the given chunk_id to the chunks_list
       """
-      self.__chunks_list.append(chunk_id)
+      self.__chunks_list.append(chunk)
 
     def remove_chunk(self, chunk_id):
       """
       Removes the chunk with the given chunk_id to the chunks_list
       """
-      self.__chunks_list.remove(chunk_id)
+      for chunk in self.__chunks_list:
+        if chunk.get_id() == chunk_id:
+          self.__chunks_list.remove(chunk)
