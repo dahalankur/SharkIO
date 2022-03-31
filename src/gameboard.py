@@ -28,7 +28,7 @@ class GameBoard():
         Return the dict of game objects
         """
         return self.__objects
-    def remove_object(self, id):
+    def remove_object(self, obj):
         """
         Remove the object from the dict of objects
         """
@@ -64,9 +64,10 @@ def tests():
     # Create a new gameboard instance
     gb = GameBoard()
     # Create a new gameobject
-    virus = GameObject(0, 0, 10, 'red', 'virus')
-    food  = GameObject(0, 0, 10, 'green', 'food')
-    chunk = GameObject(0, 0, 10, 'blue', 'chunk')
+    virus = GameObject(0, 0, 10, 'red', 'virus', uuid.uuid4())
+    food  = GameObject(0, 0, 10, 'green', 'food', uuid.uuid4())
+    chunk = GameObject(0, 0, 10, 'blue', 'chunk', uuid.uuid4())
+    # TODO: Consider how to create unique IDs. Sequentially with a global count?
     # Add the game objects to the gameboard
     gb.add_object(virus)
     gb.add_object(food)
@@ -78,14 +79,14 @@ def tests():
     assert objects[food.get_id()] == food
     assert objects[chunk.get_id()] == chunk
     # Test that objects can be removed from the gameboard
-    gb.remove_object(virus.get_id())
+    gb.remove_object(virus)
     assert len(gb.get_objects()) == 2
     assert objects[food.get_id()] == food
     assert objects[food.get_id()].get_type() == 'food'
     assert objects[chunk.get_id()] == chunk
     assert objects[chunk.get_id()].get_type() == 'chunk'
     # Test that players can be added to the gameboard
-    # TODO
+    
     
 
 # Testing adding and removing game objects
