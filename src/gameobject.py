@@ -162,5 +162,7 @@ def tests():
     assert(player2.get_pos() == (200, 100))
     assert(virus.get_pos() == (100, 102.345))
 
+    print("Passed")
+
 if __name__ == '__main__':
     tests()

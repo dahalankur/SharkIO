@@ -3,9 +3,11 @@ gameboard.py
 A gameboard represents the state of the entire game for a particular game lobby
 Written by Ellis Brown <ebrown26@cs.tufts.edu> on 3/31/2022
 """
+
 import uuid
 from gameobject import GameObject 
 from player import Player
+
 class GameBoard():
     """
     An instance of this class tracks all players and game objects
@@ -101,6 +103,8 @@ def tests():
     gb.remove_player(player1)
     assert len (gb.get_players()) == 1
     assert players[player2.get_id()] == player2
+
+    print("Passed")
 
     
     
