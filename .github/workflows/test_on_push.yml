@@ -1,0 +1,24 @@
+name: Run Unit Tests on Individual Python Source Files
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: camera.py
+        run: python3 camera.py
+      - name: chunk.py
+        run: python3 chunk.py
+      - name: gameboard.py
+        run: python3 gameboard.py
+      - name: gameobject.py
+        run: python3 gameobject.py
+      - name: player.py
+        run: python3 player.py
+      
