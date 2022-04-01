@@ -5,7 +5,6 @@ Written by Ankur Dahal <adahal01@cs.tufts.edu> on 03/16/2022
 """
 
 from math import sqrt
-import random
 
 class GameObject():
     """
@@ -122,6 +121,7 @@ class GameObject():
 
 
 def tests():
+    import random
     virus = GameObject(100, 102.345, 4, (0, 255, 0), 'virus', \
                        random.randint(1, 10))
     player1 = GameObject(100, 100, 3, (200, 0, 0), 'chunk', \
