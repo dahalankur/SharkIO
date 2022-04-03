@@ -1,7 +1,7 @@
 """
 chunk.py
 Implements a Chunk class that inherits GameObject 
-Written by Ankur Dahal <adahal01@cs.tufts.edu> on 03/31/2022
+Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 from gameobject import GameObject

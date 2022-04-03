@@ -1,7 +1,7 @@
 """
 gameboard.py
 A gameboard represents the state of the entire game for a particular game lobby
-Written by Ellis Brown <ebrown26@cs.tufts.edu> on 3/31/2022
+Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 import uuid

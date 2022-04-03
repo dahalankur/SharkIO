@@ -1,7 +1,7 @@
 """
 gameobject.py
 Implements a GameObject class
-Written by Ankur Dahal <adahal01@cs.tufts.edu> on 03/16/2022
+Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 from math import sqrt
