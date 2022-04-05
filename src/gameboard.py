@@ -46,6 +46,7 @@ class GameBoard():
         Return the dict of game objects
         """
         return self.__objects
+    
     def remove_object(self, obj):
         """
         Remove the object from the dict of objects
@@ -53,7 +54,6 @@ class GameBoard():
         # Note, we remove the object based on the unique_id of the obj.
         self.__objects.pop(obj.get_id())
         
-
     def get_players(self):
         """
         Return the dict of players
