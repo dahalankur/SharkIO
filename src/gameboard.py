@@ -13,10 +13,10 @@ class GameBoard():
     An instance of this class tracks all players and game objects
     during runtime
     """
-    def __init__(self, width, height, objects = {}, players = {}, \
+    def __init__(self, width, height, objects = None, players = None, \
                  unique_id = uuid.uuid4()):
-        self.__objects = objects
-        self.__players = players
+        self.__objects = objects if objects else dict()
+        self.__players = players if players else dict()
         self.__width = width
         self.__height = height
         # Note, uuid4() is random, and therefore it is possible, but unlikely, 
