@@ -13,13 +13,28 @@ class GameBoard():
     An instance of this class tracks all players and game objects
     during runtime
     """
-    def __init__(self, objects = {}, players = {}, unique_id = uuid.uuid4()):
+    def __init__(self, width, height, objects = {}, players = {}, \
+                 unique_id = uuid.uuid4()):
         self.__objects = objects
-        self.__players = players 
+        self.__players = players
+        self.__width = width
+        self.__height = height
         # Note, uuid4() is random, and therefore it is possible, but unlikely, 
         # that two GameBoard instances have the same unique id
         self.__unique_id = unique_id
-      
+
+    def get_height(self):
+        """
+        Return the height of the GameBoard instance
+        """
+        return self.__height
+
+    def get_width(self):
+        """
+        Return the width of the GameBoard instance
+        """
+        return self.__width  
+
     def get_unique_id(self):
         """
         Return the unique id of the GameBoard instance
@@ -31,6 +46,7 @@ class GameBoard():
         Return the dict of game objects
         """
         return self.__objects
+    
     def remove_object(self, obj):
         """
         Remove the object from the dict of objects
@@ -38,7 +54,6 @@ class GameBoard():
         # Note, we remove the object based on the unique_id of the obj.
         self.__objects.pop(obj.get_id())
         
-
     def get_players(self):
         """
         Return the dict of players
@@ -65,7 +80,7 @@ class GameBoard():
 
 def tests():
     # Create a new gameboard instance
-    gb = GameBoard()
+    gb = GameBoard(1000, 1000)
     # Create a new gameobject
     virus = GameObject(0, 0, 10, 'red', 'virus', uuid.uuid4())
     food  = GameObject(0, 0, 10, 'green', 'food', uuid.uuid4())
