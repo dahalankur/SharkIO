@@ -5,8 +5,6 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 import uuid
-from gameobject import GameObject 
-from player import Player
 
 class GameBoard():
     """
@@ -19,9 +17,13 @@ class GameBoard():
         self.__players = players if players else dict()
         self.__width = width
         self.__height = height
+        self.__unique_id = unique_id
+
         # Note, uuid4() is random, and therefore it is possible, but unlikely, 
         # that two GameBoard instances have the same unique id
-        self.__unique_id = unique_id
+        # Edit: This is not relevant to us as of now because we are planning 
+        #       on having exactly one instance of GameBoard, but might be 
+        #       different once we experiment with hosting multiple server/rooms
 
     def get_height(self):
         """
@@ -71,6 +73,7 @@ class GameBoard():
         Add the player to the dict of players
         """
         self.__players[player.get_id()] = player
+    
     def remove_player(self, player):
         """
         Remove the player from the dict of players
@@ -79,6 +82,9 @@ class GameBoard():
     
 
 def tests():
+    from gameobject import GameObject 
+    from player import Player
+    
     # Create a new gameboard instance
     gb = GameBoard(1000, 1000)
     # Create a new gameobject
@@ -91,33 +97,33 @@ def tests():
     gb.add_object(food)
     gb.add_object(chunk)
     # Test that all 3 objects are in the gameboard
-    assert len(gb.get_objects()) == 3
+    assert(len(gb.get_objects()) == 3)
     objects = gb.get_objects()
-    assert objects[virus.get_id()] == virus
-    assert objects[food.get_id()] == food
-    assert objects[chunk.get_id()] == chunk
+    assert(objects[virus.get_id()] == virus)
+    assert(objects[food.get_id()] == food)
+    assert(objects[chunk.get_id()] == chunk)
     # Test that objects can be removed from the gameboard
     gb.remove_object(virus)
-    assert len(gb.get_objects()) == 2
-    assert objects[food.get_id()] == food
-    assert objects[food.get_id()].get_type() == 'food'
-    assert objects[chunk.get_id()] == chunk
-    assert objects[chunk.get_id()].get_type() == 'chunk'
+    assert(len(gb.get_objects()) == 2)
+    assert(objects[food.get_id()] == food)
+    assert(objects[food.get_id()].get_type() == 'food')
+    assert(objects[chunk.get_id()] == chunk)
+    assert(objects[chunk.get_id()].get_type() == 'chunk')
     # Test that players can be added to the gameboard
     player1 = Player(unique_id = uuid.uuid4())
     player2 = Player(unique_id = uuid.uuid4())
     # Add the players to the gameboard
     gb.add_player(player1)
-    assert len (gb.get_players()) == 1
+    assert(len (gb.get_players()) == 1)
     gb.add_player(player2)
-    assert len (gb.get_players()) == 2
+    assert(len (gb.get_players()) == 2)
     players = gb.get_players()
-    assert players[player1.get_id()] == player1
-    assert players[player2.get_id()] == player2
+    assert(players[player1.get_id()] == player1)
+    assert(players[player2.get_id()] == player2)
     # Test that players can be removed from the gameboard
     gb.remove_player(player1)
-    assert len (gb.get_players()) == 1
-    assert players[player2.get_id()] == player2
+    assert(len (gb.get_players()) == 1)
+    assert(players[player2.get_id()] == player2)
 
     print("Passed")
 

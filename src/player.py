@@ -3,8 +3,6 @@ player.py
 Implements a Player class
 Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
-from chunk import Chunk
-import uuid
 
 class Player():
     """
@@ -59,6 +57,8 @@ class Player():
         return self.__chunks
 
 def tests():
+    from chunk import Chunk
+    
     chunk1 = Chunk(0, 0, 10, 'blue', 1, 4, 7)
     chunk2 = Chunk(0, 1, 10, 'red', 2, 5, 8)
     chunk3 = Chunk(0, 2, 10, 'green', 3, 6, 9)
