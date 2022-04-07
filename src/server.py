@@ -14,6 +14,10 @@ import struct
 
 
 def send_data(conn, data):
+    """
+    Given a socket and binary data, sends the data to the connections listening
+    to that socket
+    """
     bytes_size = len(data)
     packed_size_4_bytes = struct.pack('I', bytes_size)
     print(bytes_size, packed_size_4_bytes)
@@ -22,6 +26,9 @@ def send_data(conn, data):
     conn.send(data)
 
 def recv_data(conn):
+    """
+    Given a socket, receives and returns the binary data sent to the socket
+    """
     # receive the size of the data first, followed by the actual data
     packed_size_4_bytes_data = conn.recv(4)
     bytes_size = struct.unpack('I', packed_size_4_bytes_data)
@@ -32,14 +39,21 @@ def recv_data(conn):
     
 
 def main():
-    # player = Player(name="Ankur", unique_id=1)
+    """
+    Defines methods to handle updates from clients and updates the 
+    gameboard instance accordingly
+    """
     def start_new_player(conn, addr, id):
+        """
+        Given the socket connection, address, and player id, instantiates
+        a player instance and communicates with the connected client any change
+        in the player's state and updates the gameboard as required
+        """
         player = Player(name=id, unique_id=id)
         gameboard.add_player(player)
 
         with conn:
             print(f"Connected by {addr} with id {id}")
-            # update gameboard, pickle data, and send it to the client for it to render
             # main game loop that handles one client
             # Have thread sleep for a certain amount of time
 
@@ -69,21 +83,19 @@ def main():
                 id += 1
 
     def startup():
+        """
+        Generates initial gameboard state and starts up a server that listens
+        for connections
+        """
         # Wait for connections
             # TODO: create a function that handles dynamic spawning of food and virus as time passes    
-            # If its the first connection, start above function
-            
-            # Spawn a thread for each player that connects.
         gameboard.gen_init_state()
         listen_for_connections()
     
-
-
     gameboard = GameBoard()
     startup()  
           
 
-        
 
 if __name__ == "__main__":
     main()
