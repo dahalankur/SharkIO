@@ -8,9 +8,6 @@ import socket
 # import player from player class
 from player import Player
 
-socket.setdefaulttimeout(5) # set a default timeout so if no response is,
-                            # received the program doesn't hang
-
 p1 = Player(name="A", unique_id=1)
 
 output_file_name = "outfile"
