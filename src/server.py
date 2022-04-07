@@ -32,10 +32,11 @@ def main():
             while True:
                 serialized_board = pickle.dumps(gameboard.export_gameboard())
                 serialized_data = pickle.dumps((serialized_board, id))
-                # data = conn.recv(BUFFER_SIZE)
+                conn.sendall(serialized_data)
+                data = conn.recv(BUFFER_SIZE)
+                print(data if data else "default")
                 time.sleep(2)
                 print(f"Connection still alive {id}")
-                conn.sendall(serialized_data)
 
                 # TODO: when a client disconnects, break out of this loop
     
