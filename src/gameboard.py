@@ -91,9 +91,9 @@ class GameBoard():
         """
         self.__players.pop(player.get_id())
     
-    def generate_initial_state(self,
-                               num_virus = INIT_VIRUS_COUNT,
-                               num_food = INIT_FOOD_COUNT):
+    def gen_init_state(self,
+                       num_virus = INIT_VIRUS_COUNT,
+                       num_food = INIT_FOOD_COUNT):
         """
         Populates the gameboard with viruses and foods in random coordinates
         They have to spawn within bounds of BOARD_WIDTH, BOARD_HEIGHT
@@ -102,21 +102,20 @@ class GameBoard():
         for viruses in range(num_virus):
             virus_radius = randint(VIRUS_RADIUS_MIN, VIRUS_RADIUS_MAX)
             self.add_object(GameObject(randint(0, self.__width), 
-                                    randint(0, self.__height)),
-                                    virus_radius, GREEN)
+                                    randint(0, self.__height),
+                                    virus_radius, GREEN, 'virus', uuid.uuid4()))
         for foods in range(num_food):
             self.add_object(GameObject(randint(0, self.__width), 
-                                    randint(0, self.__height)),
-                                    FOOD_RADIUS, BLUE)
+                                    randint(0, self.__height),
+                                    FOOD_RADIUS, BLUE, 'food', uuid.uuid4()))
             
         
 
-def tests():
-    from gameobject import GameObject 
+def tests(): 
     from player import Player
     
     # Create a new gameboard instance
-    gb = GameBoard(1000, 1000)
+    gb = GameBoard(BOARD_WIDTH, BOARD_HEIGHT)
     # Create a new gameobject
     virus = GameObject(0, 0, 10, 'red', 'virus', uuid.uuid4())
     food  = GameObject(0, 0, 10, 'green', 'food', uuid.uuid4())
@@ -155,9 +154,12 @@ def tests():
     assert(len (gb.get_players()) == 1)
     assert(players[player2.get_id()] == player2)
 
+    # Test generating inital state
+    gb2 = GameBoard()
+    gb2.gen_init_state()
+    assert(len(gb2.get_objects()) == INIT_VIRUS_COUNT + INIT_FOOD_COUNT)
     print("Passed")
 
-    
     
 
 # Testing adding and removing game objects
