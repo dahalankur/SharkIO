@@ -5,14 +5,25 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 import uuid
+from random import randint
+from gameobject import GameObject
+import pygame
+from constants import (BOARD_HEIGHT,
+                       BOARD_WIDTH, FOOD_RADIUS,
+                       INIT_VIRUS_COUNT,
+                       INIT_FOOD_COUNT,
+                       VIRUS_RADIUS_MIN,
+                       VIRUS_RADIUS_MAX,
+                       GREEN,
+                       BLUE)
 
 class GameBoard():
     """
     An instance of this class tracks all players and game objects
     during runtime
     """
-    def __init__(self, width, height, objects = None, players = None, \
-                 unique_id = uuid.uuid4()):
+    def __init__(self, width = BOARD_WIDTH, height = BOARD_HEIGHT,
+                objects = None, players = None, unique_id = uuid.uuid4()):
         self.__objects = objects if objects else dict()
         self.__players = players if players else dict()
         self.__width = width
@@ -80,6 +91,25 @@ class GameBoard():
         """
         self.__players.pop(player.get_id())
     
+    def generate_initial_state(self,
+                               num_virus = INIT_VIRUS_COUNT,
+                               num_food = INIT_FOOD_COUNT):
+        """
+        Populates the gameboard with viruses and foods in random coordinates
+        They have to spawn within bounds of BOARD_WIDTH, BOARD_HEIGHT
+        """
+        
+        for viruses in range(num_virus):
+            virus_radius = randint(VIRUS_RADIUS_MIN, VIRUS_RADIUS_MAX)
+            self.add_object(GameObject(randint(0, self.__width), 
+                                    randint(0, self.__height)),
+                                    virus_radius, GREEN)
+        for foods in range(num_food):
+            self.add_object(GameObject(randint(0, self.__width), 
+                                    randint(0, self.__height)),
+                                    FOOD_RADIUS, BLUE)
+            
+        
 
 def tests():
     from gameobject import GameObject 
