@@ -25,18 +25,20 @@ def run_client():
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect((HOST, PORT))
-        data = sock.recv(BUFFERSIZE)
+        data = sock.recv(BUFFERSIZE) # TODO: make sure to receive ALL sent data
 
-    (objects, players, width, height, unique_id) = pickle.loads(data)
+    (board_data, id) = pickle.loads(data) # id is the player's id! 
+    (objects, players, width, height, unique_id) = pickle.loads(board_data)
     
     # reconstruct the gameboard instance
     gameboard = GameBoard(width=width, height=height, objects=objects, players=players, unique_id=unique_id)
-    print(players.get_id())
+    print(gameboard.get_player(id)) # should be our player object!!
+    
     # Wrap render_board with error handling
     render_board(gameboard, sock)
     
 def render_board(gameboard, sock):
-    
+    pass
     
 
 
