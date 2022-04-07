@@ -7,11 +7,8 @@ import socket
 import pickle
 from player import Player, Chunk
 from gameboard import GameBoard, GameObject
-from constants import RED, GREEN
-
-HOST = "127.0.0.1"  # The server's hostname or IP address
-PORT = 64421  # The port used by the server
-BUFFERSIZE = 10000 # TODO: this is wacky, look out for a solution
+from constants import RED, GREEN, HOST, PORT
+from server import send_data, recv_data
 
 FPS = 30
 WIDTH = HEIGHT = 600
@@ -25,8 +22,8 @@ def run_client():
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect((HOST, PORT))
-        data = sock.recv(BUFFERSIZE) # TODO: make sure to receive ALL sent data
-        sock.send(b"hi")
+        data = recv_data(sock)
+        send_data(sock, b"hello")
     
         (board_data, id) = pickle.loads(data) # id is the player's id! 
         (objects, players, width, height, unique_id) = pickle.loads(board_data)

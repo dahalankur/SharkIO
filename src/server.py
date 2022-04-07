@@ -4,18 +4,32 @@ Starts up a server for multiple clients to connect
 """
 import socket
 import pickle
-from constants import MAX_CONNECTIONS
+from constants import MAX_CONNECTIONS, HOST, PORT
 from player import Player
 from threading import Thread, Lock
 from gameboard import GameBoard
 from gameobject import GameObject
 import time
+import struct
 
 
-HOST = "127.0.0.1"  # localhost
-PORT = 64421  # any port, arbitrarily picked
-BUFFER_SIZE = 1024
+def send_data(conn, data):
+    bytes_size = len(data)
+    packed_size_4_bytes = struct.pack('I', bytes_size)
+    print(bytes_size, packed_size_4_bytes)
+    # send the size of the data as 4 bytes first, followed by the actual data
+    conn.send(packed_size_4_bytes)
+    conn.send(data)
 
+def recv_data(conn):
+    # receive the size of the data first, followed by the actual data
+    packed_size_4_bytes_data = conn.recv(4)
+    bytes_size = struct.unpack('I', packed_size_4_bytes_data)
+    print(bytes_size, packed_size_4_bytes_data)
+    packed_size_4_bytes = bytes_size[0]
+    data = conn.recv(packed_size_4_bytes)
+    return data
+    
 
 def main():
     # player = Player(name="Ankur", unique_id=1)
@@ -32,8 +46,8 @@ def main():
             while True:
                 serialized_board = pickle.dumps(gameboard.export_gameboard())
                 serialized_data = pickle.dumps((serialized_board, id))
-                conn.sendall(serialized_data)
-                data = conn.recv(BUFFER_SIZE)
+                send_data(conn, serialized_data)
+                data = recv_data(conn)
                 print(data if data else "default")
                 time.sleep(2)
                 print(f"Connection still alive {id}")
