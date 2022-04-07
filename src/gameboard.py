@@ -84,6 +84,13 @@ class GameBoard():
         with self.__lock:    
             return self.__players
 
+    def get_player(self, id):
+        """
+        Return the player with the given id
+        """
+        with self.__lock:
+            return self.__players[id]
+
     def add_object(self, obj):
         """
         Add the game object to the dict of game objects
