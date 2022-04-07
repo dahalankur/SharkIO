@@ -3,3 +3,9 @@
    setting it to None and performing an explicit check for None in the 
    constructor. 
    Ref: https://stackoverflow.com/questions/4841782/python-constructor-and-default-value
+
+2. Not really a "bug", but we kept on getting truncated data error while
+   deserializing our gameboard instance in client. This was fixed by writing 
+   new functions send_data and recv_data that first sent the size of the data 
+   that was going to be sent, followed by the actual data itself so the buffer 
+   size is dynamic at the time of receiving data!

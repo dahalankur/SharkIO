@@ -1,5 +1,9 @@
 # declaration of constant values used in multiple files of the program
 from pygame import Color 
+
+HOST = "127.0.0.1"  # localhost
+PORT = 64422  # any port, arbitrarily picked
+
 BOARD_HEIGHT = 1000
 BOARD_WIDTH = 1000
 INIT_VIRUS_COUNT =  2
