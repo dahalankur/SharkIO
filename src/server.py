@@ -13,7 +13,7 @@ import time
 
 
 HOST = "127.0.0.1"  # localhost
-PORT = 64429  # any port, arbitrarily picked
+PORT = 64421  # any port, arbitrarily picked
 BUFFER_SIZE = 1024
 
 
@@ -22,6 +22,7 @@ def main():
     def start_new_player(conn, addr, id):
         player = Player(name=id, unique_id=id)
         gameboard.add_player(player)
+
         with conn:
             print(f"Connected by {addr} with id {id}")
             # update gameboard, pickle data, and send it to the client for it to render
@@ -29,9 +30,12 @@ def main():
             # Have thread sleep for a certain amount of time
 
             while True:
-                time.sleep(10)
+                serialized_board = pickle.dumps(gameboard.export_gameboard())
+                # data = conn.recv(BUFFER_SIZE)
+                time.sleep(2)
                 print(f"Connection still alive {id}")
-
+                conn.sendall(serialized_board)
+    
     def listen_for_connections():
         """
         Opens a socket and listens for connections, no return or params

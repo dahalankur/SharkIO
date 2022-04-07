@@ -37,6 +37,13 @@ class GameBoard():
         # Edit: This is not relevant to us as of now because we are planning 
         #       on having exactly one instance of GameBoard, but might be 
         #       different once we experiment with hosting multiple server/rooms
+    def export_gameboard(self):
+        """
+        Return a dict of all game objects and players
+        """
+        with self.__lock:
+            return (self.__objects, self.__players, self.__width, self.__height, self.__unique_id)
+
 
     def get_height(self):
         """
@@ -50,7 +57,7 @@ class GameBoard():
         """
         return self.__width  
 
-    def get_unique_id(self):
+    def get_id(self):
         """
         Return the unique id of the GameBoard instance
         """
