@@ -8,6 +8,7 @@ import uuid
 from random import randint
 from gameobject import GameObject
 import pygame
+from threading import Lock
 from constants import (BOARD_HEIGHT,
                        BOARD_WIDTH, FOOD_RADIUS,
                        INIT_VIRUS_COUNT,
@@ -29,6 +30,7 @@ class GameBoard():
         self.__width = width
         self.__height = height
         self.__unique_id = unique_id
+        self.__lock = Lock()
 
         # Note, uuid4() is random, and therefore it is possible, but unlikely, 
         # that two GameBoard instances have the same unique id
@@ -58,38 +60,46 @@ class GameBoard():
         """
         Return the dict of game objects
         """
-        return self.__objects
+        with self.__lock:
+            return self.__objects
     
     def remove_object(self, obj):
         """
         Remove the object from the dict of objects
         """
-        # Note, we remove the object based on the unique_id of the obj.
-        self.__objects.pop(obj.get_id())
+        with self.__lock:
+            self.__objects.pop(obj.get_id())
         
     def get_players(self):
         """
         Return the dict of players
         """
-        return self.__players
+        with self.__lock:    
+            return self.__players
 
     def add_object(self, obj):
         """
         Add the game object to the dict of game objects
         """
-        self.__objects[obj.get_id()] = obj
+        with self.__lock:
+            self.__add_object(obj)
+    
+    def __add_object(self, obj):
+            self.__objects[obj.get_id()] = obj
     
     def add_player(self, player):
         """
         Add the player to the dict of players
         """
-        self.__players[player.get_id()] = player
+        with self.__lock: 
+            self.__players[player.get_id()] = player
     
     def remove_player(self, player):
         """
         Remove the player from the dict of players
         """
-        self.__players.pop(player.get_id())
+        with self.__lock: 
+            self.__players.pop(player.get_id())
     
     def gen_init_state(self,
                        num_virus = INIT_VIRUS_COUNT,
@@ -98,16 +108,17 @@ class GameBoard():
         Populates the gameboard with viruses and foods in random coordinates
         They have to spawn within bounds of BOARD_WIDTH, BOARD_HEIGHT
         """
-        
-        for viruses in range(num_virus):
-            virus_radius = randint(VIRUS_RADIUS_MIN, VIRUS_RADIUS_MAX)
-            self.add_object(GameObject(randint(0, self.__width), 
-                                    randint(0, self.__height),
-                                    virus_radius, GREEN, 'virus', uuid.uuid4()))
-        for foods in range(num_food):
-            self.add_object(GameObject(randint(0, self.__width), 
-                                    randint(0, self.__height),
-                                    FOOD_RADIUS, BLUE, 'food', uuid.uuid4()))
+        with self.__lock:
+            for viruses in range(num_virus):
+                virus_radius = randint(VIRUS_RADIUS_MIN, VIRUS_RADIUS_MAX)
+                self.__add_object(GameObject(randint(0, self.__width), 
+                                        randint(0, self.__height),
+                                        virus_radius, GREEN, 'virus', uuid.uuid4()))
+            for foods in range(num_food):
+                id = uuid.uuid4()
+                self.__add_object(GameObject(randint(0, self.__width), 
+                                        randint(0, self.__height),
+                                        FOOD_RADIUS, BLUE, 'food', id))
             
         
 
