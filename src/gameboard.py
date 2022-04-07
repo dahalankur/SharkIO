@@ -32,11 +32,6 @@ class GameBoard():
         self.__unique_id = unique_id
         self.__lock = Lock()
 
-        # Note, uuid4() is random, and therefore it is possible, but unlikely, 
-        # that two GameBoard instances have the same unique id
-        # Edit: This is not relevant to us as of now because we are planning 
-        #       on having exactly one instance of GameBoard, but might be 
-        #       different once we experiment with hosting multiple server/rooms
     def export_gameboard(self):
         """
         Return a dict of all game objects and players

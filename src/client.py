@@ -14,7 +14,7 @@ PORT = 64421  # The port used by the server
 BUFFERSIZE = 10000 # TODO: this is wacky, look out for a solution
 
 FPS = 30
-WIDTH = HEIGHT = 500
+WIDTH = HEIGHT = 600
 WHITE = pygame.Color(255, 255, 255)
 
 def run_client():
@@ -65,16 +65,31 @@ def run_client():
 
                 print(radius, velocity, posx, posy, mousex, mousey)
                 screen.fill(WHITE)
-
                 # TODO: update the player and all its chunk objects with the changed attributes (new positions), if there are any collisions with a food, remove the food, and update the gameboard instance. Send the pickled instance to the server.
+                chunk.set_pos(posx, posy)
+               
+                # TODO: draw food and virus and other players (but have to draw only within the view of the player...how to do that? a camera would come in handy here lol)
+                # hypothetical code if camera existed:
+            for _, object in gameboard.get_objects().items():
+                # a check for seeing if that object is in the player's view or not
+                pygame.draw.circle(screen, object.get_color(), object.get_pos(), object.get_radius())
 
-                pygame.draw.circle(screen, chunk.get_color(), (posx, posy), chunk.get_radius()) # player
-                pygame.display.flip()
+            for _, others in gameboard.get_players().items():
+                if others.get_id() != id: # render everyone except us
+                    chunks = others.get_chunks()
+                    for _, chunk in chunks.items():
+                        pygame.draw.circle(screen, chunk.get_color(), chunk.get_pos(), chunk.get_radius())
 
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        # TODO: send message to the server that I am disconnecting
-                        running = False
+
+            # even though this looks like it is working, the changes are not communicated to the server yet.
+            pygame.draw.circle(screen, chunk.get_color(), (posx, posy), chunk.get_radius()) # player
+
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    # TODO: send message to the server that I am disconnecting
+                    running = False
 
     # quit
     pygame.quit()
