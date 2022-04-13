@@ -77,11 +77,13 @@ def run_client():
             text2 = font2.render(leader_txt, True, (255, 0, 0))
             screen.blit(text2, (480, loc))
 
-            players_list = list(players.values()).sort(key=lambda x: x.get_score(), reverse=True)
+            players_list = list(players.values())
+            #players = sorted(players, key = lambda x: players[x].get_score())
+            players_list.sort(key=lambda x: x.get_score(), reverse=True)
             
             for player in players_list:
               loc = loc + 15
-              leader_txt2 = str(player.get_name()) + ": " + str(player.get_score())
+              leader_txt2 = str(player.get_name()) + ": " + str(int(player.get_score()))
               text3 = font2.render(leader_txt2, True, (255, 0, 0))
               screen.blit(text3, (480, loc))
 
