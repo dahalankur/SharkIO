@@ -22,12 +22,27 @@ class Player():
         """
         # TODO: Generating id from this function currently not implemented
         self.__chunks = dict()
+        self.__score = 0
         self.__camera_view = camera_view
         self.__name = name
         self.__unique_id = unique_id
         __chunk = Chunk(INIT_LOC_X, INIT_LOC_Y, PLAYER_RADIUS, RED, unique_id, PLAYER_VELOCITY, 0)
         self.__chunks[__chunk.get_id()] = __chunk # initial player chunk
     
+
+    def get_score(self):
+      """
+      Returns the score of the player
+      """
+      return self.__score
+    
+    def set_score(self, score):
+      """
+      Sets the score of the player
+      """
+      self.__score = score
+    
+
     def get_id(self):
       """
       Returns the unique id of the player

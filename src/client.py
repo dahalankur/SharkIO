@@ -22,6 +22,7 @@ def run_client():
     pygame.init()
     screen = pygame.display.set_mode([WIDTH, HEIGHT])
     clock = pygame.time.Clock()
+    font = pygame.font.SysFont("segoe ui", 34, True)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect((HOST, PORT))
@@ -30,7 +31,7 @@ def run_client():
 
         while running:
             data = recv_data(sock)
-            (objects_dict, player) = pickle.loads(data)
+            (objects_dict, players, player) = pickle.loads(data)
             
             clock.tick(FPS)
             screen.fill(WHITE)
@@ -65,6 +66,12 @@ def run_client():
                 pygame.draw.circle(screen, object.get_color(), object.get_pos(), object.get_radius())
             
             # TODO: add a score UI text that increases every time we consume food
+            score = player.get_score() # need to update score
+            text = font.render("Score: " + str(score), True, (255, 0, 0))
+            screen.blit(text, (30, 550))
+
+            # TODO: leaderboard
+            
 
             # even though this looks like it is working, the changes are not communicated to the server yet.
             # pygame.draw.circle(screen, chunk.get_color(), (posx, posy), chunk.get_radius()) # player
