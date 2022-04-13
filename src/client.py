@@ -23,6 +23,7 @@ def run_client():
     screen = pygame.display.set_mode([WIDTH, HEIGHT])
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("segoe ui", 34, True)
+    font2 = pygame.font.SysFont("segoe ui", 15, True)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect((HOST, PORT))
@@ -71,25 +72,26 @@ def run_client():
             screen.blit(text, (30, 550))
 
             # TODO: leaderboard
-            
+            loc = 20
+            leader_txt = 'Leaderboard'
+            text2 = font2.render(leader_txt, True, (255, 0, 0))
+            screen.blit(text2, (480, loc))
 
-            # even though this looks like it is working, the changes are not communicated to the server yet.
-            # pygame.draw.circle(screen, chunk.get_color(), (posx, posy), chunk.get_radius()) # player
+            players_list = list(players.values()).sort(key=lambda x: x.get_score(), reverse=True)
+            
+            for player in players_list:
+              loc = loc + 15
+              leader_txt2 = str(player.get_name()) + ": " + str(player.get_score())
+              text3 = font2.render(leader_txt2, True, (255, 0, 0))
+              screen.blit(text3, (480, loc))
+
 
             pygame.display.flip()
-
-            ### Change chunks, object_dict ####
-            # chunks = 
-            # object_dict = 
-
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     # TODO: send message to the server that I am disconnecting
                     running = False
-            
-
-    quit
     pygame.quit()
 
 
