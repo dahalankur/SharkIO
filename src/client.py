@@ -36,6 +36,9 @@ def run_client():
 
         while running:
             data = recv_data(sock)
+            if data == b"disconnect":
+                break
+                
             (objects_dict, players, player) = pickle.loads(data)
             
             clock.tick(FPS)

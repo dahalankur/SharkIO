@@ -73,9 +73,14 @@ def main():
                     gameboard.add_object(chunk) # threadsafe due to mutex.
 
                 with state_lock:
-                    if ret := update_self_state(player) == 0:
-                        # gameboard.remove_player(player)
-                        break # since our player died
+                    update_self_state(player, gameboard.get_players())
+                
+                if len(player.get_chunks().values()) == 0:
+                    # means player died, so remove them from the gameboard
+                    gameboard.remove_player(player)
+                    send_data(conn, b"disconnect")
+                    break
+
                 # when a client disconnects (or gets eaten!!), break out of this loop, and
                 # remove their game objects (IMPORTANT!)
             print(f"Player disconnected with id {id}")
@@ -86,11 +91,12 @@ def main():
         return gameboard.get_player(player_id)
 
     
-    def update_self_state(player):
+    def update_self_state(player, players):
         # for this player's chunks, check if they have any collisions.
         # Iterate through all game objects to check for collisons
         objects_array = list(gameboard.get_objects().values())
-        for chunk in player.get_chunks().values():
+        chunks = list(player.get_chunks().values())
+        for chunk in chunks:
             if chunk in objects_array:
                 for other in objects_array:
                     if other != chunk: # cannot collide with self
@@ -101,21 +107,13 @@ def main():
                                     chunk.increase_radius(other.get_radius())
                                     chunk.set_score(chunk.get_score() + other.get_score())
                                     gameboard.remove_object(other)
-
-                                    gameboard.remove_player(get_player_by_chunk(other)) # TODO: shouldn't this be necessary as well since the player no longer is alive?
+                                    get_player_by_chunk(other).remove_chunk(other)
                                 else:
-                                    # since other is a copy and not a reference, we might have to manually update player instance
-                                    print(other.get_id(), other.get_radius(), other.get_score())
                                     other.increase_radius(chunk.get_radius())
-                                    other.set_score(chunk.get_score() + other.get_score())
-                                    get_player_by_chunk(other).add_chunk(other)
-                                    gameboard.add_object(other)
-                                    # print(other.get_id(), other.get_radius(), other.get_score()) # this shows that the values are updated, but they are not reflected client side
-                                    # should this chunk data be updated for the player object as well to reflect it?
-                                    # TODO:  CHANGE OF DESIGN: ONE CHUNK BABY, implement shooting mechanics
-                                    # BANG BANG
+                                    other.set_score(chunk.get_score() + other.get_score()) # TODO: in this branch, the scores and radii of the OTHER PLAYER WHO ATE US are not updating when the player is eaten by another player
+                                    # objects_array[objects_array.index(other)] = other
                                     gameboard.remove_object(chunk)
-                                    return 0
+                                    player.remove_chunk(chunk)
                             elif other.is_virus():
                                 size_change = (chunk.get_radius() / 2) - 4
                                 chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
