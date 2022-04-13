@@ -82,7 +82,6 @@ def run_client():
             screen.blit(text2, (480, loc))
 
             players_list = list(players.values())
-            #players = sorted(players, key = lambda x: players[x].get_score())
             players_list.sort(key=lambda x: x.get_score(), reverse=True)
             
             for player in players_list:
