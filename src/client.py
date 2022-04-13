@@ -67,7 +67,7 @@ def run_client():
             
             # TODO: add a score UI text that increases every time we consume food
             score = player.get_score() # need to update score
-            text = font.render("Score: " + str(score), True, (255, 0, 0))
+            text = font.render("Score: " + str(int(score)), True, (255, 0, 0))
             screen.blit(text, (30, 550))
 
             # TODO: leaderboard

@@ -45,7 +45,7 @@ class Chunk(GameObject):
         """
         Return the velocity of the Chunk instance
         """
-        return max(MIN_VELOCITY, 40 - 1.25 * self.get_radius())
+        return max(MIN_VELOCITY, 35 - 0.5 * self.get_radius())
     
     def set_velocity(self, velocity):
         """
