@@ -34,13 +34,13 @@ class Player():
       """
       Returns the score of the player
       """
-      return self.__score
+      return sum([chunk.get_score() for chunk in self.__chunks.values()])
     
-    def set_score(self, score):
-      """
-      Sets the score of the player
-      """
-      self.__score = score
+    # def set_score(self, score):
+    #   """
+    #   Sets the score of the player
+    #   """
+    #   self.__score = max(0, score) # do not let score be negative
     
 
     def get_id(self):

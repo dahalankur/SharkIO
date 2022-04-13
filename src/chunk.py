@@ -5,6 +5,7 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 from gameobject import GameObject
+from constants import MIN_VELOCITY
 
 class Chunk(GameObject):
     """
@@ -22,12 +23,29 @@ class Chunk(GameObject):
         super().__init__(pos_x, pos_y, radius, color, type, id)
         self.__velocity = velocity
         self.__sub_id = sub_id
+        self.__score = 0
+    
+    def get_score(self):
+      """
+      Returns the score of the chunk
+      """
+      return self.__score
+    
+    def set_score(self, score):
+      """
+      Sets the score of the chunk
+      """
+      self.__score = max(0, score) # do not let score be negative
+
+    def increase_radius(self, size):
+        self.set_radius(size + self.get_radius())
+        # self.set_velocity(max(MIN_VELOCITY, self.__velocity - 0.05 * self.__velocity))
 
     def get_velocity(self):
         """
         Return the velocity of the Chunk instance
         """
-        return self.__velocity
+        return max(MIN_VELOCITY, 40 - 1.25 * self.get_radius())
     
     def set_velocity(self, velocity):
         """

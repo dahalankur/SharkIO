@@ -28,9 +28,6 @@ class GameObject():
         self.__type = type
         self.__id = id
 
-    def increase_radius(self, size):
-        self.__radius += size
-
     def is_virus(self):
         """
         Return true if the GameObject instance is a virus, and false otherwise

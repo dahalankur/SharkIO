@@ -67,64 +67,46 @@ def main():
                     player.add_chunk(chunk)     # local
                     gameboard.add_object(chunk) # threadsafe due to mutex.
 
-                # TODO: collision detection and handling between players, player and food, player and virus
                 with state_lock:
                     update_self_state(player)
 
                 # when a client disconnects, break out of this loop, and
-                # remove their game objects
+                # remove their game objects (IMPORTANT!)
                     
                 
 
     
     def update_self_state(player):
+        # for this player's chunks, check if they have any collisions.
+        # Iterate through all game objects to check for collisons
         objects_array = list(gameboard.get_objects().values())
         for chunk in player.get_chunks().values():
             if chunk in objects_array:
                 for other in objects_array:
-                    # what about self comparison?
-                    if other != chunk:
+                    if other != chunk: # cannot collide with self
                         if chunk.is_colliding(other):
                             # player-player collision
                             if other.is_chunk():
-                                print("colliding with another player")
-                                # check the scores of the two players, remove the
-                                # loser (J. Parsells, by class poll) lol
-                                if player.get_radius() > other.get_radius(): 
-                                    player.set_radius(player.get_radius() + other.get_radius())
-                                    player.set_score(player.get_score() + other.get_score())
+                                if chunk.get_radius() > other.get_radius(): 
+                                    chunk.increase_radius(other.get_radius())
+                                    chunk.set_score(chunk.get_score() + other.get_score())
                                     gameboard.remove_object(other)
                                 else:
-                                    other.set_radius(player.get_radius() + other.get_radius())
-                                    other.set_score(player.get_score() + other.get_score())
-                                    # TODO: what if player has multiple chunks? CHANGE OF DESIGN: ONE CHUNK BABY, implement shooting mechanics
+                                    other.increase_radius(chunk.get_radius())
+                                    other.set_score(chunk.get_score() + other.get_score())
+                                    # TODO:  CHANGE OF DESIGN: ONE CHUNK BABY, implement shooting mechanics
                                     # BANG BANG
                                     gameboard.remove_object(player)
                             elif other.is_virus():
-                                print("colliding with a virus")
-                                chunk.set_radius(chunk.get_radius() - (chunk.get_radius() / 2 - 4)) # reduce by 25% -4 
+                                size_change = (chunk.get_radius() / 2) - 4
+                                chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
+                                chunk.set_score(chunk.get_score() - size_change)
                                 gameboard.remove_object(other)
                                 # TODO: remove the virus as well
                             elif other.is_food():
-                                print("colliding with food")
                                 gameboard.remove_object(other)
-                                player.set_score(player.get_score() +  1) 
-                                chunk.increase_radius(1)
-                                # this still works cause it 
-                                # doesnt modify dict length chunk.
-        
-        
-    
-    
-    # def update_gamestate():
-    #     # FPS = 30
-    #     # time.sleep(1 / 30) TODO: make it sleep for some arbritary time
-
-    #     # player colliding with non-player objects
-    #     for players in gameboard.get_objects():
-            
-            
-    #         compare player ids, the one with the lower id HANDLES the collision.
+                                chunk.set_score(player.get_score() +  2) 
+                                chunk.increase_radius(2)
 
     
     def listen_for_connections():
