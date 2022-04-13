@@ -52,6 +52,7 @@ class GameObject():
         """
         return self.__id
 
+
     def get_pos(self):
         """
         Return the current position of the GameObject instance as a 2-tuple

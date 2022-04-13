@@ -2,7 +2,7 @@
 from pygame import Color 
 
 HOST = "127.0.0.1"  # localhost
-PORT = 64422  # any port, arbitrarily picked
+PORT = 64420  # any port, arbitrarily picked
 
 BOARD_HEIGHT = 1000
 BOARD_WIDTH = 1000

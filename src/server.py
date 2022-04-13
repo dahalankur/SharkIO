@@ -20,7 +20,6 @@ def send_data(conn, data):
     """
     bytes_size = len(data)
     packed_size_4_bytes = struct.pack('I', bytes_size)
-    print(bytes_size, packed_size_4_bytes)
     # send the size of the data as 4 bytes first, followed by the actual data
     conn.send(packed_size_4_bytes)
     conn.send(data)
@@ -32,7 +31,6 @@ def recv_data(conn):
     # receive the size of the data first, followed by the actual data
     packed_size_4_bytes_data = conn.recv(4)
     bytes_size = struct.unpack('I', packed_size_4_bytes_data)
-    print(bytes_size, packed_size_4_bytes_data)
     packed_size_4_bytes = bytes_size[0]
     data = conn.recv(packed_size_4_bytes)
     return data
@@ -58,15 +56,25 @@ def main():
             # Have thread sleep for a certain amount of time
 
             while True:
-                serialized_board = pickle.dumps(gameboard.export_gameboard())
-                serialized_data = pickle.dumps((serialized_board, id))
+                serialized_data = pickle.dumps((gameboard.get_objects(), player))
                 send_data(conn, serialized_data)
-                data = recv_data(conn)
-                print(data if data else "default")
-                time.sleep(2)
-                print(f"Connection still alive {id}")
+                
+                data = recv_data(conn) # get the updated chunks dict for that player
+                chunks = pickle.loads(data)
+                for chunk in chunks.values():
+                    # update player and gameboard chunks
+                    player.add_chunk(chunk)
+                    gameboard.add_object(chunk)
+    
+                
 
-                # TODO: when a client disconnects, break out of this loop
+
+                # TODO: collision detection and handling between players, player and food, player and virus
+            
+                time.sleep(0.002)
+                # TODO: when a client disconnects, break out of this loop, and
+                # remove their game objects.
+            
     
     def listen_for_connections():
         """
