@@ -73,11 +73,17 @@ def main():
                     gameboard.add_object(chunk) # threadsafe due to mutex.
 
                 with state_lock:
-                    update_self_state(player)
+                    if ret := update_self_state(player) == 0:
+                        # gameboard.remove_player(player)
+                        break # since our player died
                 # when a client disconnects (or gets eaten!!), break out of this loop, and
                 # remove their game objects (IMPORTANT!)
+            print(f"Player disconnected with id {id}")
                     
                 
+    def get_player_by_chunk(chunk):
+        player_id = int(chunk.get_id().split(":")[0])
+        return gameboard.get_player(player_id)
 
     
     def update_self_state(player):
@@ -95,20 +101,26 @@ def main():
                                     chunk.increase_radius(other.get_radius())
                                     chunk.set_score(chunk.get_score() + other.get_score())
                                     gameboard.remove_object(other)
-                                    # gameboard.remove_player()
+
+                                    gameboard.remove_player(get_player_by_chunk(other)) # TODO: shouldn't this be necessary as well since the player no longer is alive?
                                 else:
+                                    # since other is a copy and not a reference, we might have to manually update player instance
+                                    print(other.get_id(), other.get_radius(), other.get_score())
                                     other.increase_radius(chunk.get_radius())
                                     other.set_score(chunk.get_score() + other.get_score())
+                                    get_player_by_chunk(other).add_chunk(other)
+                                    gameboard.add_object(other)
+                                    # print(other.get_id(), other.get_radius(), other.get_score()) # this shows that the values are updated, but they are not reflected client side
+                                    # should this chunk data be updated for the player object as well to reflect it?
                                     # TODO:  CHANGE OF DESIGN: ONE CHUNK BABY, implement shooting mechanics
                                     # BANG BANG
                                     gameboard.remove_object(chunk)
-                                    # gameboard.remove_player(player)
+                                    return 0
                             elif other.is_virus():
                                 size_change = (chunk.get_radius() / 2) - 4
                                 chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
                                 chunk.set_score(chunk.get_score() - size_change)
                                 gameboard.remove_object(other)
-                                # TODO: remove the virus as well
                             elif other.is_food():
                                 gameboard.remove_object(other)
                                 chunk.set_score(chunk.get_score() + 2) 
