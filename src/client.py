@@ -27,7 +27,11 @@ def run_client():
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect((HOST, PORT))
-        
+
+        # send player name to the server
+        name = bytes(input("Enter your name: ").encode('utf-8'))
+        send_data(sock, name)
+
         running = True
 
         while running:
@@ -66,12 +70,12 @@ def run_client():
                 # a check for seeing if that object is in the player's view or not goes here. maybe we do not need an explicit camera, we could calculate the render rectangle dynamically every time
                 pygame.draw.circle(screen, object.get_color(), object.get_pos(), object.get_radius())
             
-            # TODO: add a score UI text that increases every time we consume food
-            score = player.get_score() # need to update score
+            # render score UI
+            score = player.get_score()
             text = font.render("Score: " + str(int(score)), True, (255, 0, 0))
             screen.blit(text, (30, 550))
 
-            # TODO: leaderboard
+            # render leaderboard
             loc = 20
             leader_txt = 'Leaderboard'
             text2 = font2.render(leader_txt, True, (255, 0, 0))

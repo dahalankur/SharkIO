@@ -53,6 +53,11 @@ def main():
 
         with conn:
             print(f"Connected by {addr} with id {id}")
+            # get player's name
+            data = recv_data(conn)
+            if data:
+                player.set_name(data.decode('utf-8'))
+
             # main game loop that handles one client
             # Have thread sleep for a certain amount of time
 
@@ -69,8 +74,7 @@ def main():
 
                 with state_lock:
                     update_self_state(player)
-
-                # when a client disconnects, break out of this loop, and
+                # when a client disconnects (or gets eaten!!), break out of this loop, and
                 # remove their game objects (IMPORTANT!)
                     
                 
@@ -85,18 +89,20 @@ def main():
                 for other in objects_array:
                     if other != chunk: # cannot collide with self
                         if chunk.is_colliding(other):
-                            # player-player collision
+                            # player-player collision # TODO: not working rn
                             if other.is_chunk():
                                 if chunk.get_radius() > other.get_radius(): 
                                     chunk.increase_radius(other.get_radius())
                                     chunk.set_score(chunk.get_score() + other.get_score())
                                     gameboard.remove_object(other)
+                                    # gameboard.remove_player()
                                 else:
                                     other.increase_radius(chunk.get_radius())
                                     other.set_score(chunk.get_score() + other.get_score())
                                     # TODO:  CHANGE OF DESIGN: ONE CHUNK BABY, implement shooting mechanics
                                     # BANG BANG
-                                    gameboard.remove_object(player)
+                                    gameboard.remove_object(chunk)
+                                    # gameboard.remove_player(player)
                             elif other.is_virus():
                                 size_change = (chunk.get_radius() / 2) - 4
                                 chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
@@ -105,7 +111,7 @@ def main():
                                 # TODO: remove the virus as well
                             elif other.is_food():
                                 gameboard.remove_object(other)
-                                chunk.set_score(player.get_score() +  2) 
+                                chunk.set_score(chunk.get_score() + 2) 
                                 chunk.increase_radius(2)
 
     
@@ -119,8 +125,6 @@ def main():
             sock.bind((HOST, PORT))
             sock.listen(MAX_CONNECTIONS)
             while True:
-                # if id == 0:
-                #     Thread(target=update_gamestate, args = ()).start()
                 conn, addr = sock.accept()
                 Thread(target=start_new_player, args=(conn, addr, id)).start()
                 id += 1
@@ -130,8 +134,7 @@ def main():
         Generates initial gameboard state and starts up a server that listens
         for connections
         """
-        # Wait for connections
-            # TODO: create a function that handles dynamic spawning of food and virus as time passes    
+        # TODO: create a function that handles dynamic spawning of food and virus as time passes    
         gameboard.gen_init_state()
         listen_for_connections()
     
