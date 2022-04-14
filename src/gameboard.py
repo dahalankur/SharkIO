@@ -102,9 +102,9 @@ class GameBoard():
         """
         with self.__lock: 
             self.__players[player.get_id()] = player
-            chunks = player.get_chunks()
-            for _, chunk in chunks.items():
-                self.__add_object(chunk) # TODO: figure out a way to add chunks to objects dict when we split mass!
+            # self.__add_object(player.get_chunk())
+            # for _, chunk in chunks.items():
+            #     self.__add_object(chunk) # TODO: figure out a way to add chunks to objects dict when we split mass!
 
     def remove_player(self, player):
         """

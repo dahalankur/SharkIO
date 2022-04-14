@@ -8,7 +8,6 @@ from constants import MAX_CONNECTIONS, HOST, PORT
 from player import Player
 from threading import Thread, Lock
 from gameboard import GameBoard
-from gameobject import GameObject
 import time
 import struct
 
@@ -41,88 +40,99 @@ def main():
     Defines methods to handle updates from clients and updates the 
     gameboard instance accordingly
     """
-    state_lock = Lock()
     def start_new_player(conn, addr, id):
         """
         Given the socket connection, address, and player id, instantiates
         a player instance and communicates with the connected client any change
         in the player's state and updates the gameboard as required
         """
+        nonlocal players, gameboard
+
         player = Player(name=id, unique_id=id)
         gameboard.add_player(player)
 
         with conn:
             print(f"Connected by {addr} with id {id}")
+            
             # get player's name
             data = recv_data(conn)
             if data:
                 player.set_name(data.decode('utf-8'))
 
-            # main game loop that handles one client
-            # Have thread sleep for a certain amount of time
-
             while True:
-                serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), player))
+                serialized_data = pickle.dumps((gameboard.get_objects(), players, gameboard.get_player(id)))
                 send_data(conn, serialized_data)
                 
-                data = recv_data(conn) # get the updated chunks dict for that player
-                chunks = pickle.loads(data)
-                for chunk in chunks.values():
-                    # update player and gameboard chunks
-                    player.add_chunk(chunk)     # local
-                    gameboard.add_object(chunk) # threadsafe due to mutex.
-
-                with state_lock:
-                    update_self_state(player, gameboard.get_players())
-                
-                if len(player.get_chunks().values()) == 0:
-                    # means player died, so remove them from the gameboard
-                    gameboard.remove_player(player)
+                try:
+                    data = recv_data(conn)
+                    chunk = pickle.loads(data) # receive updated chunk from client
+                    gameboard.get_player(id).set_chunk(chunk)
+                    
+                    with state_lock:        
+                        check_player_collisions()
+                        check_other_collisions(gameboard.get_player(id))
+                except KeyError:
+                    # means the player died because gameboard.get_player(id) will crash, so exit gracefully
                     send_data(conn, b"disconnect")
                     break
-
-                # when a client disconnects (or gets eaten!!), break out of this loop, and
-                # remove their game objects (IMPORTANT!)
+                # TODO: find out when client disconnects and exit out this loop
             print(f"Player disconnected with id {id}")
                     
-                
-    def get_player_by_chunk(chunk):
-        player_id = int(chunk.get_id().split(":")[0])
-        return gameboard.get_player(player_id)
+
+    def check_player_collisions():
+        """
+        Given a list of players, checks if any players are colliding and if 
+        they are, kills the player with the lower score
+        """
+        nonlocal players, gameboard
+        players_sorted_by_score = sorted(players.values(), key=lambda p: p.get_score())
+        for i, p1 in enumerate(players_sorted_by_score):
+            for p2 in players_sorted_by_score[i + 1:]:
+                # invariant: p2 always has higher score than p1
+                p1_chunk = p1.get_chunk()
+                p2_chunk = p2.get_chunk()
+                if p1_chunk.is_colliding(p2_chunk):
+                    # kill p1
+                    # print(f"Before death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
+                    p2_chunk.increase_radius(p1_chunk.get_radius())
+                    p2_chunk.set_score(p2_chunk.get_score() + p1_chunk.get_score())
+                    p2.set_chunk(p2_chunk)
+                    players[p2.get_id()] = p2
+                    # p2_chunk.set_radius(10) THIS WORKS BUT THE ONE BELOW DOES NOT. WHY???!?!?!?!?!?
+                    # p2_chunk.increase_radius(p1_chunk.get_radius())
+                    # p1_chunk.set_score(0)
+                    # p1_chunk.set_pos(0, 0)
+                    # p1_score = p1.get_score()
+                    # p2_score = p2.get_score()
+                    # p2_chunk.set_score(p1_score + p2_score)
+
+                    # p1_chunk.set_pos(0, 0)
+
+                    # observation: as long as p1 is not removed, it looks like it works. I confirm that it does work if player is not removed
+                    gameboard.remove_player(p1)
+                    # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
+                    # print(f"According to the gameboard, p2's score is {gameboard.get_player(p2.get_id()).get_score()}")
+                    # for some reason, this does not update when player is smaller than another player and is eaten -- the bigger player does not gain score or radius
 
     
-    def update_self_state(player, players):
-        # for this player's chunks, check if they have any collisions.
-        # Iterate through all game objects to check for collisons
+    def check_other_collisions(player):
+        """
+        Given the player, checks if the player collides with other game objects
+        in the gameboard and takes necessary action
+        """
         objects_array = list(gameboard.get_objects().values())
-        chunks = list(player.get_chunks().values())
-        for chunk in chunks:
-            if chunk in objects_array:
-                for other in objects_array:
-                    if other != chunk: # cannot collide with self
-                        if chunk.is_colliding(other):
-                            # player-player collision # TODO: not working rn
-                            if other.is_chunk():
-                                if chunk.get_radius() > other.get_radius(): 
-                                    chunk.increase_radius(other.get_radius())
-                                    chunk.set_score(chunk.get_score() + other.get_score())
-                                    gameboard.remove_object(other)
-                                    get_player_by_chunk(other).remove_chunk(other)
-                                else:
-                                    other.increase_radius(chunk.get_radius())
-                                    other.set_score(chunk.get_score() + other.get_score()) # TODO: in this branch, the scores and radii of the OTHER PLAYER WHO ATE US are not updating when the player is eaten by another player
-                                    # objects_array[objects_array.index(other)] = other
-                                    gameboard.remove_object(chunk)
-                                    player.remove_chunk(chunk)
-                            elif other.is_virus():
-                                size_change = (chunk.get_radius() / 2) - 4
-                                chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
-                                chunk.set_score(chunk.get_score() - size_change)
-                                gameboard.remove_object(other)
-                            elif other.is_food():
-                                gameboard.remove_object(other)
-                                chunk.set_score(chunk.get_score() + 2) 
-                                chunk.increase_radius(2)
+        chunk = player.get_chunk()
+        for other in objects_array:
+            if chunk.is_colliding(other):
+                if other.is_virus():
+                    size_change = (chunk.get_radius() / 2) - 4
+                    chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
+                    chunk.set_score(chunk.get_score() - size_change)
+                    gameboard.remove_object(other)
+                elif other.is_food():
+                    gameboard.remove_object(other)
+                    chunk.set_score(chunk.get_score() + 2) 
+                    chunk.increase_radius(2)
 
     
     def listen_for_connections():
@@ -148,7 +158,9 @@ def main():
         gameboard.gen_init_state()
         listen_for_connections()
     
+    state_lock = Lock()
     gameboard = GameBoard()
+    players = gameboard.get_players()
     startup()
           
 
