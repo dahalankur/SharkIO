@@ -16,33 +16,27 @@ class Player():
     a list of chunks and it's camera view
     """
     def __init__(self, camera_view = None, 
-                 name = "Example", unique_id = "todo"):
+                 name = "Example", unique_id = 0):
         """
         Initialize the Player object with the list of chunk and camera view
         """
-        # TODO: Generating id from this function currently not implemented
-        self.__chunks = dict()
-        self.__score = 0
+        self.__chunk = Chunk(INIT_LOC_X, INIT_LOC_Y, PLAYER_RADIUS, RED, unique_id, PLAYER_VELOCITY, 0)
         self.__camera_view = camera_view
         self.__name = name
         self.__unique_id = unique_id
-        __chunk = Chunk(INIT_LOC_X, INIT_LOC_Y, PLAYER_RADIUS, RED, unique_id, PLAYER_VELOCITY, 0)
-        self.__chunks[__chunk.get_id()] = __chunk # initial player chunk
-    
 
     def get_score(self):
       """
       Returns the score of the player
       """
-      return sum([chunk.get_score() for chunk in self.__chunks.values()])
+      return self.__chunk.get_score()
     
-    # def set_score(self, score):
-    #   """
-    #   Sets the score of the player
-    #   """
-    #   self.__score = max(0, score) # do not let score be negative
+    def set_score(self, score):
+      """
+      Sets the score of the player
+      """
+      self.__chunk.set_score(max(0, score))
     
-
     def get_id(self):
       """
       Returns the unique id of the player
@@ -60,58 +54,42 @@ class Player():
         Sets the name of the player
         """
         self.__name = name
-    
-    def add_chunk(self, chunk):
-        """
-        Adds the chunk to the chunks_list
-        """
-        self.__chunks[chunk.get_id()] = chunk
 
-    def remove_chunk(self, chunk):
+    def set_chunk(self, chunk):
         """
-        Removes the chunk with the given chunk_id to the chunks_list
+        Sets the chunk of the player to chunk
         """
-        self.__chunks.pop(chunk.get_id())
-    
-    def get_chunks(self):
+        self.__chunk = chunk
+
+    def get_chunk(self):
         """
-        Returns the list of chunks
+        Returns the chunk associated with the player
         """
-        return self.__chunks
+        return self.__chunk
 
 def tests():
     chunk1 = Chunk(0, 0, 10, 'blue', 1, 4, 7)
     chunk2 = Chunk(0, 1, 10, 'red', 2, 5, 8)
-    chunk3 = Chunk(0, 2, 10, 'green', 3, 6, 9)
 
     player1 = Player(unique_id = 1, name="A")
     player2 = Player(unique_id = 2, name="B")
 
-    # Add chunk to the players
-    assert(len(player1.get_chunks()) == 1)
-    assert(len(player2.get_chunks()) == 1)
-    
-    player1.add_chunk(chunk1)
-    player2.add_chunk(chunk2)
-    player2.add_chunk(chunk3)
-    
-    player1_chunk = player1.get_chunks()
-    assert(len(player1_chunk) == 2)
+    player1.set_chunk(chunk1)
+    player2.set_chunk(chunk2)
 
-    player2_chunk = player2.get_chunks()
-    assert(len(player2_chunk) == 3)
-    
-    assert(player1_chunk[chunk1.get_id()] == chunk1)
-    assert(player2_chunk[chunk2.get_id()] == chunk2)
-    assert(player2_chunk[chunk3.get_id()] == chunk3)
-   
-    # Remove chunk
-    player2.remove_chunk(chunk3)
-    player2_chunk2 = player2.get_chunks()
+    assert(player1.get_chunk() == chunk1)
+    assert(player2.get_chunk() == chunk2)
 
-    assert(len(player1_chunk) == 2)
-    assert(len(player2_chunk2) == 2)
-    assert(player2_chunk2[chunk2.get_id()] == chunk2)
+    assert(player1.get_chunk().get_color() == 'blue')
+    assert(player2.get_chunk().get_color() == 'red')
+
+    assert(player1.get_name() == "A")
+
+    player1.set_score(92)
+    player2.set_score(-2)
+    
+    assert(player1.get_score() == 92)
+    assert(player2.get_score() == 0)
 
     print("Passed")
 
