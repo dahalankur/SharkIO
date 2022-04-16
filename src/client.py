@@ -7,7 +7,7 @@ import socket
 import pickle
 from player import Player, Chunk
 from gameboard import GameBoard, GameObject
-from constants import HOST, PORT, RED, GREEN, BOARD_HEIGHT, BOARD_WIDTH
+from constants import HOST, PORT, BOARD_HEIGHT, BOARD_WIDTH
 from server import send_data, recv_data
 
 FPS = 30
