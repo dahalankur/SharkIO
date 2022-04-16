@@ -5,8 +5,10 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 from gameobject import GameObject
 from chunk import Chunk
-from constants import PLAYER_RADIUS, RED, PLAYER_VELOCITY
-INIT_LOC_X = INIT_LOC_Y = 0 # TODO: Initial location is constant, randomize it
+from constants import PLAYER_RADIUS, RED, PLAYER_VELOCITY, BOARD_WIDTH, BOARD_HEIGHT
+from random import randint, choice
+from pygame import Color
+
 # TODO: randomize color later, change it from RED to something else
 
 
@@ -20,10 +22,34 @@ class Player():
         """
         Initialize the Player object with the list of chunk and camera view
         """
-        self.__chunk = Chunk(INIT_LOC_X, INIT_LOC_Y, PLAYER_RADIUS, RED, unique_id, PLAYER_VELOCITY, 0)
+        int_x = randint(0, BOARD_WIDTH)
+        int_y = randint(0, BOARD_HEIGHT)
+        
+        self.__chunk = Chunk(int_x, int_y, PLAYER_RADIUS, \
+                       self.__get_random_color(), unique_id, PLAYER_VELOCITY, 0)
         self.__camera_view = camera_view
         self.__name = name
         self.__unique_id = unique_id
+      
+    def __get_random_color(self):
+      valid = False
+      while not valid:
+        r = randint(0, 255)
+        g = randint(0, 255)
+        b = randint(0, 255)
+
+        # make sure the color is not too light
+        if (r > 0 and g > 0 and b > 0):
+          valid = False
+        # MAKE SURE NOT GREEN
+        if (r < 10 and g > 240 and b < 10):
+          valid = False
+        # MAKE SURE NOT BLUE
+        if (r < 10 and g < 10 and b > 240):
+          valid = False
+      
+      return Color(r, g, b)
+
 
     def get_score(self):
       """

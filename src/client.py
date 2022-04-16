@@ -7,17 +7,16 @@ import socket
 import pickle
 from player import Player, Chunk
 from gameboard import GameBoard, GameObject
-from constants import HOST, PORT, RED, GREEN
+from constants import HOST, PORT, RED, GREEN, BOARD_HEIGHT, BOARD_WIDTH
 from server import send_data, recv_data
 
 FPS = 30
-WIDTH = HEIGHT = 1200
 WHITE = pygame.Color(255, 255, 255)
 
 
 def init_pygame():
     pygame.init()
-    screen = pygame.display.set_mode([WIDTH, HEIGHT])
+    screen = pygame.display.set_mode([500, 500])
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("segoe ui", 34, True)
     font2 = pygame.font.SysFont("segoe ui", 15, True)
@@ -58,7 +57,7 @@ def run_client():
             color = chunk.get_color()
             if posx < mousex - radius: # TODO: adjust the constant accordingly
                 # move right
-                posx = min(WIDTH, posx + velocity)
+                posx = min(BOARD_WIDTH, posx + velocity)
             elif posx > mousex + radius:
                 # move left
                 posx = max(0, posx - velocity)
@@ -67,21 +66,9 @@ def run_client():
                 posy = max(0, posy - velocity)
             elif posy < mousey - radius:
                 # move up
-                posy = min(HEIGHT, posy + velocity)
+                posy = min(BOARD_HEIGHT, posy + velocity)
             
             chunk.set_pos(posx, posy) # TODO: might have to change once camera and perspective comes into play
-            
-            # Check if the player is near the edge of the gameboard,
-            # which has dimensions WIDTH X HEIGHT
-            dist_to_edge = 100
-            if ((posx + radius) > WIDTH - dist_to_edge ):
-                print("Near X edge max")
-            if ((posx - radius) < dist_to_edge):    
-                print("Near X edge min")
-            if ((posy + radius) > HEIGHT - dist_to_edge):
-                print("Near Y edge max")
-            if ((posy - radius) < dist_to_edge):
-                print("Near Y edge min")
             
 
 
