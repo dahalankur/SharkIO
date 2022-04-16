@@ -2,13 +2,13 @@
 from pygame import Color 
 
 HOST = "127.0.0.1"  # localhost
-PORT = 64410  # any port, arbitrarily picked
+PORT = 64417  # any port, arbitrarily picked
 
-BOARD_HEIGHT = 1366
-BOARD_WIDTH = 768
+BOARD_HEIGHT = 768
+BOARD_WIDTH = 1366
 INIT_VIRUS_COUNT =  3
 INIT_FOOD_COUNT = 30
-FOOD_RADIUS = 3
+FOOD_RADIUS = 2.2
 PLAYER_RADIUS = 20
 PLAYER_MINIMUM_RADIUS = 20
 PLAYER_VELOCITY = 7

@@ -16,7 +16,7 @@ WHITE = pygame.Color(255, 255, 255)
 
 def init_pygame():
     pygame.init()
-    screen = pygame.display.set_mode([500, 500])
+    screen = pygame.display.set_mode([BOARD_WIDTH, BOARD_HEIGHT])
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("segoe ui", 34, True)
     font2 = pygame.font.SysFont("segoe ui", 15, True)
@@ -43,7 +43,7 @@ def run_client():
             data = recv_data(sock)
             if data == b"disconnect":
                 break
-            print("Recieved data length: ", len(data))
+            # print("Recieved data length: ", len(data))
             (objects_dict, players, player) = pickle.loads(data)
             
             clock.tick(FPS)
@@ -54,7 +54,6 @@ def run_client():
             (posx, posy) = chunk.get_pos()
             radius = chunk.get_radius()
             velocity = chunk.get_velocity()
-            color = chunk.get_color()
             if posx < mousex - radius: # TODO: adjust the constant accordingly
                 # move right
                 posx = min(BOARD_WIDTH, posx + velocity)
@@ -69,8 +68,6 @@ def run_client():
                 posy = min(BOARD_HEIGHT, posy + velocity)
             
             chunk.set_pos(posx, posy) # TODO: might have to change once camera and perspective comes into play
-            
-
 
             # Draw the game objects
             for _, object in objects_dict.items():

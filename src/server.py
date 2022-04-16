@@ -22,7 +22,7 @@ def send_data(conn, data):
     Given a socket and binary data, sends the data to the connections listening
     to that socket
     """
-    print("Sent length: ", len(data))
+    # print("Sent length: ", len(data))
     bytes_size = len(data)
     packed_size_4_bytes = struct.pack('I', bytes_size)
     # send the size of the data as 4 bytes first, followed by the actual data
@@ -165,7 +165,7 @@ def main():
             
             with state_lock:
                 if len(gameboard.get_objects()) < 60:
-                    print("number of objects: ", len(gameboard.get_objects()))
+                    # print("number of objects: ", len(gameboard.get_objects()))
                     iterations += 1 
                     if num_food < MAX_FOOD_IN_GAME:
                         for _ in range(num_players):

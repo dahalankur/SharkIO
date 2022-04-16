@@ -34,18 +34,19 @@ class Player():
     def __get_random_color(self):
       valid = False
       while not valid:
+        valid = True
         r = randint(0, 255)
         g = randint(0, 255)
         b = randint(0, 255)
 
         # make sure the color is not too light
-        if (r > 0 and g > 0 and b > 0):
+        if (r > 220 and g > 220 and b > 220):
           valid = False
         # MAKE SURE NOT GREEN
-        if (r < 10 and g > 240 and b < 10):
+        if (r < 25 and g > 220 and b < 25):
           valid = False
         # MAKE SURE NOT BLUE
-        if (r < 10 and g < 10 and b > 240):
+        if (r < 25 and g < 25 and b > 220):
           valid = False
       
       return Color(r, g, b)
