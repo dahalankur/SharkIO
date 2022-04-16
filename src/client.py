@@ -81,13 +81,13 @@ def run_client():
             
              # render score UI
             text = font.render("Score: " + str(int(player.get_score())), True, (255, 0, 0))
-            screen.blit(text, (30, 550))
+            screen.blit(text, (30, 700))
 
             # render leaderboard
             loc = 20
             leader_txt = 'Leaderboard'
             text2 = font2.render(leader_txt, True, (255, 0, 0))
-            screen.blit(text2, (480, loc))
+            screen.blit(text2, (1220, loc))
 
             players_list = list(players.values())
             players_list.sort(key=lambda x: x.get_score(), reverse=True)
@@ -96,7 +96,7 @@ def run_client():
               loc = loc + 15
               leader_txt2 = str(player.get_name()) + ": " + str(int(player.get_score()))
               text3 = font2.render(leader_txt2, True, (255, 0, 0))
-              screen.blit(text3, (480, loc))
+              screen.blit(text3, (1220, loc))
 
             # send the updated chunk data to the server.
             data = pickle.dumps(chunk)
