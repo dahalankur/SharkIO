@@ -6,6 +6,7 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 
 from gameobject import GameObject
 from constants import MIN_VELOCITY
+import math
 
 class Chunk(GameObject):
     """
@@ -44,7 +45,7 @@ class Chunk(GameObject):
         """
         Return the velocity of the Chunk instance
         """
-        return max(MIN_VELOCITY, 35 - 0.5 * self.get_radius())
+        return max(MIN_VELOCITY, 35 - 0.5 * math.sqrt(self.get_radius()))
     
     def set_velocity(self, velocity):
         """

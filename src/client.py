@@ -11,7 +11,7 @@ from constants import HOST, PORT, RED, GREEN
 from server import send_data, recv_data
 
 FPS = 30
-WIDTH = HEIGHT = 600
+WIDTH = HEIGHT = 1200
 WHITE = pygame.Color(255, 255, 255)
 
 
@@ -44,7 +44,7 @@ def run_client():
             data = recv_data(sock)
             if data == b"disconnect":
                 break
-                
+            print("Recieved data length: ", len(data))
             (objects_dict, players, player) = pickle.loads(data)
             
             clock.tick(FPS)
@@ -56,20 +56,32 @@ def run_client():
             radius = chunk.get_radius()
             velocity = chunk.get_velocity()
             color = chunk.get_color()
-            if posx < mousex - (radius * 1.25): # TODO: adjust the constant accordingly
+            if posx < mousex - radius: # TODO: adjust the constant accordingly
                 # move right
                 posx = min(WIDTH, posx + velocity)
-            elif posx > mousex + (radius * 1.25):
+            elif posx > mousex + radius:
                 # move left
                 posx = max(0, posx - velocity)
-            if posy > mousey + (radius * 1.25):
+            if posy > mousey + radius:
                 # move down
                 posy = max(0, posy - velocity)
-            elif posy < mousey - (radius * 1.25):
+            elif posy < mousey - radius:
                 # move up
                 posy = min(HEIGHT, posy + velocity)
             
             chunk.set_pos(posx, posy) # TODO: might have to change once camera and perspective comes into play
+            
+            # Check if the player is near the edge of the gameboard,
+            # which has dimensions WIDTH X HEIGHT
+            dist_to_edge = 100
+            if ((posx + radius) > WIDTH - dist_to_edge ):
+                print("Near X edge max")
+            if ((posx - radius) < dist_to_edge):    
+                print("Near X edge min")
+            if ((posy + radius) > HEIGHT - dist_to_edge):
+                print("Near Y edge max")
+            if ((posy - radius) < dist_to_edge):
+                print("Near Y edge min")
             
 
 

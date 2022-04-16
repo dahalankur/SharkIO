@@ -4,11 +4,16 @@ Starts up a server for multiple clients to connect
 """
 import socket
 import pickle
-from constants import MAX_CONNECTIONS, HOST, PORT
+from constants import MAX_CONNECTIONS, HOST, PLAYER_MINIMUM_RADIUS, PORT, FOOD_RADIUS ,\
+    BLUE, FOOD_GENERATION_TIME, FOOD_GENERATION_ITERATIONS, VIRUS_RADIUS_MIN,\
+    VIRUS_RADIUS_MAX, GREEN, MAX_FOOD_IN_GAME, MAX_VIRUS_IN_GAME
 from player import Player
 from threading import Thread, Lock
 from gameboard import GameBoard
+from gameobject import GameObject
 import time
+import uuid
+from random import randint
 import struct
 
 
@@ -17,6 +22,7 @@ def send_data(conn, data):
     Given a socket and binary data, sends the data to the connections listening
     to that socket
     """
+    print("Sent length: ", len(data))
     bytes_size = len(data)
     packed_size_4_bytes = struct.pack('I', bytes_size)
     # send the size of the data as 4 bytes first, followed by the actual data
@@ -46,7 +52,6 @@ def main():
         a player instance and communicates with the connected client any change
         in the player's state and updates the gameboard as required
         """
-        nonlocal players, gameboard
 
         player = Player(name=id, unique_id=id)
         gameboard.add_player(player)
@@ -60,8 +65,10 @@ def main():
                 player.set_name(data.decode('utf-8'))
 
             while True:
-                serialized_data = pickle.dumps((gameboard.get_objects(), players, gameboard.get_player(id)))
-                send_data(conn, serialized_data)
+                time.sleep(0.04)
+                with state_lock:
+                    serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
+                    send_data(conn, serialized_data)
                 
                 try:
                     data = recv_data(conn)
@@ -84,8 +91,7 @@ def main():
         Given a list of players, checks if any players are colliding and if 
         they are, kills the player with the lower score
         """
-        nonlocal players, gameboard
-        players_sorted_by_score = sorted(players.values(), key=lambda p: p.get_score())
+        players_sorted_by_score = sorted(gameboard.get_players().values(), key=lambda p: p.get_score())
         for i, p1 in enumerate(players_sorted_by_score):
             for p2 in players_sorted_by_score[i + 1:]:
                 # invariant: p2 always has higher score than p1
@@ -97,18 +103,7 @@ def main():
                     p2_chunk.increase_radius(p1_chunk.get_radius())
                     p2_chunk.set_score(p2_chunk.get_score() + p1_chunk.get_score())
                     p2.set_chunk(p2_chunk)
-                    players[p2.get_id()] = p2
-                    # p2_chunk.set_radius(10) THIS WORKS BUT THE ONE BELOW DOES NOT. WHY???!?!?!?!?!?
-                    # p2_chunk.increase_radius(p1_chunk.get_radius())
-                    # p1_chunk.set_score(0)
-                    # p1_chunk.set_pos(0, 0)
-                    # p1_score = p1.get_score()
-                    # p2_score = p2.get_score()
-                    # p2_chunk.set_score(p1_score + p2_score)
-
-                    # p1_chunk.set_pos(0, 0)
-
-                    # observation: as long as p1 is not removed, it looks like it works. I confirm that it does work if player is not removed
+                    gameboard.get_players()[p2.get_id()] = p2
                     gameboard.remove_player(p1)
                     # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
                     # print(f"According to the gameboard, p2's score is {gameboard.get_player(p2.get_id()).get_score()}")
@@ -122,12 +117,18 @@ def main():
         """
         objects_array = list(gameboard.get_objects().values())
         chunk = player.get_chunk()
-        for other in objects_array:
+        for other in objects_array:            
             if chunk.is_colliding(other):
                 if other.is_virus():
-                    size_change = (chunk.get_radius() / 2) - 4
-                    chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
-                    chunk.set_score(chunk.get_score() - size_change)
+                    size_change = (chunk.get_radius() / 2) - 2
+                    if (chunk.get_radius() - size_change) > PLAYER_MINIMUM_RADIUS:
+
+                        chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
+                        chunk.set_score(chunk.get_score() - size_change)
+                    else: # set to minimum size
+                        chunk.set_radius(PLAYER_MINIMUM_RADIUS)
+                        chunk.set_score(0)
+        
                     gameboard.remove_object(other)
                 elif other.is_food():
                     gameboard.remove_object(other)
@@ -149,20 +150,50 @@ def main():
                 Thread(target=start_new_player, args=(conn, addr, id)).start()
                 id += 1
 
+    def generate_food():
+        iterations = 1
+        while True:
+            num_players = len(gameboard.get_players().keys())
+            num_food = 0
+            for object in gameboard.get_objects().values():
+                if object.is_food():
+                    num_food += 1
+                # if object.is_virus(): 
+                #     num_virus += 1
+            
+            num_virus = len(gameboard.get_objects()) - num_food
+            
+            with state_lock:
+                if len(gameboard.get_objects()) < 60:
+                    print("number of objects: ", len(gameboard.get_objects()))
+                    iterations += 1 
+                    if num_food < MAX_FOOD_IN_GAME:
+                        for _ in range(num_players):
+                            gameboard.add_object(GameObject(randint(0, gameboard.get_width()), 
+                                                    randint(0, gameboard.get_height()),
+                                                    FOOD_RADIUS, BLUE, 'food', uuid.uuid4()))
+                    if num_virus < MAX_VIRUS_IN_GAME:
+                        if iterations % FOOD_GENERATION_ITERATIONS == 0:
+                            virus_radius = randint(VIRUS_RADIUS_MIN, VIRUS_RADIUS_MAX)
+                            gameboard.add_object(GameObject(randint(0, gameboard.get_width()), 
+                                                    randint(0, gameboard.get_height()),
+                                                    virus_radius, GREEN, 'virus', uuid.uuid4()))
+            time.sleep(FOOD_GENERATION_TIME)
+
     def startup():
         """
         Generates initial gameboard state and starts up a server that listens
         for connections
         """
-        # TODO: create a function that handles dynamic spawning of food and virus as time passes    
+        Thread(target= generate_food, args = ()).start() # TODO: check that we SLEEP
         gameboard.gen_init_state()
-        listen_for_connections()
+        listen_for_connections() # TODO: LOCK CONNECTION
     
     state_lock = Lock()
     gameboard = GameBoard()
-    players = gameboard.get_players()
     startup()
           
+
 
 
 if __name__ == "__main__":
