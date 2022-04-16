@@ -26,8 +26,8 @@ def send_data(conn, data):
     bytes_size = len(data)
     packed_size_4_bytes = struct.pack('I', bytes_size)
     # send the size of the data as 4 bytes first, followed by the actual data
-    conn.send(packed_size_4_bytes)
-    conn.send(data)
+    conn.sendall(packed_size_4_bytes)
+    conn.sendall(data)
 
 def recv_data(conn):
     """
