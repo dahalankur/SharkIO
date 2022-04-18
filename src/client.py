@@ -2,6 +2,7 @@
 client.py
 """
 
+import time
 import pygame
 import socket
 import pickle
@@ -42,7 +43,13 @@ def run_client():
         while running:
             data = recv_data(sock)
             if data == b"disconnect":
-                break
+                dead_text = "You died. Respawing in 5 seconds."
+                text3 = font.render(dead_text, True, (255, 0, 0))
+                screen.blit(text3, (380, 380))
+                pygame.display.flip()
+                time.sleep(5)
+  
+                send_data(sock, name)
             # print("Recieved data length: ", len(data))
             (objects_dict, players, player) = pickle.loads(data)
             
