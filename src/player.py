@@ -9,9 +9,6 @@ from constants import PLAYER_RADIUS, RED, PLAYER_VELOCITY, BOARD_WIDTH, BOARD_HE
 from random import randint, choice
 from pygame import Color
 
-# TODO: randomize color later, change it from RED to something else
-
-
 class Player():
     """
     An instance of this class represents a player object which contains

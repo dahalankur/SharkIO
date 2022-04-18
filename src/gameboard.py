@@ -7,7 +7,6 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 import uuid
 from random import randint
 from gameobject import GameObject
-import pygame
 from threading import Lock
 from constants import (BOARD_HEIGHT,
                        BOARD_WIDTH, FOOD_RADIUS,
@@ -102,9 +101,6 @@ class GameBoard():
         """
         with self.__lock: 
             self.__players[player.get_id()] = player
-            # self.__add_object(player.get_chunk())
-            # for _, chunk in chunks.items():
-            #     self.__add_object(chunk) # TODO: figure out a way to add chunks to objects dict when we split mass!
 
     def remove_player(self, player):
         """
@@ -143,7 +139,6 @@ def tests():
     virus = GameObject(0, 0, 10, 'red', 'virus', uuid.uuid4())
     food  = GameObject(0, 0, 10, 'green', 'food', uuid.uuid4())
     chunk = GameObject(0, 0, 10, 'blue', 'chunk', uuid.uuid4())
-    # TODO: Consider how to create unique IDs. Sequentially with a global count?
     # Add the game objects to the gameboard
     gb.add_object(virus)
     gb.add_object(food)
