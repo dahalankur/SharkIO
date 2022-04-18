@@ -74,11 +74,11 @@ def main():
 
             while True:
                 time.sleep(0.04)
-                with state_lock:
-                    serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
-                    send_data(conn, serialized_data)
-                
                 try:
+                    with state_lock:
+                        serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
+                        send_data(conn, serialized_data)
+                
                     data = recv_data(conn)
                     chunk = pickle.loads(data) # receive updated chunk from client
                     gameboard.get_player(id).set_chunk(chunk)
