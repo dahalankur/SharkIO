@@ -9,6 +9,8 @@ from player import Player, Chunk
 from gameboard import GameBoard, GameObject
 from constants import HOST, PORT, BOARD_HEIGHT, BOARD_WIDTH
 from server import send_data, recv_data
+from os import listdir
+from random import choice
 
 FPS = 30
 WHITE = pygame.Color(255, 255, 255)
@@ -77,7 +79,16 @@ def run_client():
             # Draw the players
             for p in players.values():
                 p_chunk = p.get_chunk()
-                pygame.draw.circle(screen, p_chunk.get_color(), p_chunk.get_pos(), p_chunk.get_radius())
+
+                bg_circle = pygame.draw.circle(screen, p_chunk.get_color(), p_chunk.get_pos(), p_chunk.get_radius())
+
+                shark_image = p.get_shark()
+
+                # scale the shark image to the radius of the background circle
+                scaled_shark = pygame.transform.scale(shark_image, (p_chunk.get_radius(), p_chunk.get_radius()))
+
+                # blit the scaled shark image to be centered on the background circle
+                screen.blit(scaled_shark, (bg_circle.centerx - scaled_shark.get_width() / 2, bg_circle.centery - scaled_shark.get_height() / 2))
             
              # render score UI
             text = font.render("Score: " + str(int(player.get_score())), True, (255, 0, 0))

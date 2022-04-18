@@ -69,7 +69,9 @@ class GameBoard():
         Remove the object from the dict of objects
         """
         with self.__lock:
+            # display game over screen for
             self.__objects.pop(obj.get_id())
+
         
     def get_players(self):
         """
