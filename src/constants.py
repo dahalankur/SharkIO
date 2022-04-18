@@ -2,7 +2,7 @@
 from pygame import Color 
 
 HOST = "127.0.0.1"  # localhost
-PORT = 64412  # any port, arbitrarily picked
+PORT = 64414  # any port, arbitrarily picked
 
 BOARD_HEIGHT = 768
 BOARD_WIDTH = 1366
@@ -19,7 +19,7 @@ VIRUS_RADIUS_MAX =  20
 GREEN = Color(0,255,0)
 RED = Color(255,0,0)
 BLUE = Color(0,0,255)
-FOOD_GENERATION_TIME = 0.35
+FOOD_GENERATION_TIME = 0.2
 
 FOOD_GENERATION_ITERATIONS = 10
 MAX_FOOD_IN_GAME = 100
