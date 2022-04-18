@@ -1,12 +1,13 @@
 import pygame
 pygame.init()
-#
+#https://realpython.com/pygame-a-primer/#conclusion
 ###
 class Player:
     def __init__(self):
         self.image = pygame.Surface((16,16)) # Create Player Image
         self.image.fill(colors["RED"]) # Fill Player Red
         self.rect = pygame.Rect((50,50),(16,16)) # Create Player Rect
+    
     def move(self,camera_pos):
         pos_x,pos_y = camera_pos # Split camara_pos
         #
@@ -38,6 +39,7 @@ class Player:
             pos_y = camera_pos[1]
         #
         return (pos_x,pos_y) # Return New Camera Pos
+    
     def render(self,display):
         display.blit(self.image,(self.rect.x,self.rect.y))
 ###
@@ -45,7 +47,7 @@ class Player:
 #
 ###
 def Main(display,clock):
-    world = pygame.Surface((1000,1000)) # Create Map Surface
+    world = pygame.Surface((1000,1000)) # analogous to gameboard
     world.fill(colors["BLACK"]) # Fill Map Surface Black
     for x in range(10):
         pygame.draw.rect(world,colors["BLUE"],((x*100,x*100),(20,20))) # Put Blue Rectagles On Map Surface
