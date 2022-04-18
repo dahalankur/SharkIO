@@ -16,30 +16,38 @@ import uuid
 from random import randint
 import struct
 
-
+# Note: the send_data, recv_data, and recvall methods were inspired by the 
+# post on stackoverflow. The posts are cited in our notes/bugs.txt file 
 def send_data(conn, data):
     """
     Given a socket and binary data, sends the data to the connections listening
     to that socket
     """
-    # print("Sent length: ", len(data))
     bytes_size = len(data)
     packed_size_4_bytes = struct.pack('I', bytes_size)
-    # send the size of the data as 4 bytes first, followed by the actual data
     conn.sendall(packed_size_4_bytes)
     conn.sendall(data)
 
-def recv_data(conn):
-    """
-    Given a socket, receives and returns the binary data sent to the socket
-    """
-    # receive the size of the data first, followed by the actual data
-    packed_size_4_bytes_data = conn.recv(4)
-    bytes_size = struct.unpack('I', packed_size_4_bytes_data)
-    packed_size_4_bytes = bytes_size[0]
-    data = conn.recv(packed_size_4_bytes)
+def recv_data(sock):
+    # Read message length and unpack it into an integer
+    raw_msglen = recvall(sock, 4)
+    if not raw_msglen:
+        return None
+    msglen = struct.unpack('I', raw_msglen)[0]
+    # Read the message data
+    return recvall(sock, msglen)
+
+def recvall(sock, n):
+    # Helper function to recv n bytes or return None if EOF is hit
+    data = bytearray()
+    while len(data) < n:
+        packet = sock.recv(n - len(data))
+        if not packet:
+            return None
+        data.extend(packet)
     return data
-    
+# end section borrowed from stackoverflow
+
 
 def main():
     """
@@ -164,8 +172,7 @@ def main():
             num_virus = len(gameboard.get_objects()) - num_food
             
             with state_lock:
-                if len(gameboard.get_objects()) < 60:
-                    # print("number of objects: ", len(gameboard.get_objects()))
+                if len(gameboard.get_objects()) < 800:
                     iterations += 1 
                     if num_food < MAX_FOOD_IN_GAME:
                         for _ in range(num_players):
