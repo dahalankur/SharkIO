@@ -72,22 +72,27 @@ def main():
 
             while True:
                 time.sleep(0.04)
-                with state_lock:
-                    serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
-                    send_data(conn, serialized_data)
-                
                 try:
+                    with state_lock:
+                        serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
+                        send_data(conn, serialized_data)
+                
                     data = recv_data(conn)
                     chunk = pickle.loads(data) # receive updated chunk from client
+                    if not chunk:
+                        continue
                     gameboard.get_player(id).set_chunk(chunk)
                     
                     with state_lock:        
                         check_player_collisions()
                         check_other_collisions(gameboard.get_player(id))
                 except KeyError:
-                    # means the player died because gameboard.get_player(id) will crash, so exit gracefully
-                    send_data(conn, b"disconnect")
-                    break
+                    # means the player died because gameboard.get_player(id) will crash, so respawn
+                    # create a new player with the same id
+                    # send_data(conn, b"disconnect")
+                    time.sleep(2)
+                    player = Player(name=id, unique_id=id)
+                    gameboard.add_player(player)
                 # TODO: find out when client disconnects and exit out this loop
             print(f"Player disconnected with id {id}")
                     
