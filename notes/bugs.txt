@@ -9,3 +9,15 @@
    new functions send_data and recv_data that first sent the size of the data 
    that was going to be sent, followed by the actual data itself so the buffer 
    size is dynamic at the time of receiving data!
+
+3. Adding on to the bug from 2., we ran into the same bug but this one on the 
+   end of the recv statment of the python socket! To help resolve this bug, 
+   we referenced this stackoverflow post:
+   https://stackoverflow.com/questions/17667903/python-socket-receive-large-amount-of-data
+   and added checks in our receiving logic to append received data packets 
+   to construct the full transmitted packet.
+
+"Feature, not a bug": If you're big enough, viruses can spawn INSIDE YOU,
+causing you to lose most of your mass instantly. This is a game-balancing 
+mechanic that prevents players from dominating the map after they have increased
+in size.

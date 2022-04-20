@@ -16,30 +16,36 @@ import uuid
 from random import randint
 import struct
 
-
+# Note: the send_data, recv_data, and recvall methods were inspired by the 
+# post on stackoverflow. The posts are cited in our notes/bugs.txt file 
 def send_data(conn, data):
     """
     Given a socket and binary data, sends the data to the connections listening
     to that socket
     """
-    # print("Sent length: ", len(data))
-    bytes_size = len(data)
-    packed_size_4_bytes = struct.pack('I', bytes_size)
-    # send the size of the data as 4 bytes first, followed by the actual data
-    conn.sendall(packed_size_4_bytes)
+    data = struct.pack('>I', len(data)) + data
     conn.sendall(data)
 
-def recv_data(conn):
-    """
-    Given a socket, receives and returns the binary data sent to the socket
-    """
-    # receive the size of the data first, followed by the actual data
-    packed_size_4_bytes_data = conn.recv(4)
-    bytes_size = struct.unpack('I', packed_size_4_bytes_data)
-    packed_size_4_bytes = bytes_size[0]
-    data = conn.recv(packed_size_4_bytes)
+def recv_data(sock):
+    # Read message length and unpack it into an integer
+    data_len = recvall(sock, 4)
+    if not data_len:
+        return None
+    msglen = struct.unpack('>I', data_len)[0]
+    # Read the message data
+    return recvall(sock, msglen)
+
+def recvall(sock, n):
+    # Helper function to recv n bytes or return None if EOF is hit
+    data = bytearray()
+    while len(data) < n:
+        packet = sock.recv(n - len(data))
+        if not packet:
+            return None
+        data.extend(packet)
     return data
-    
+# end section borrowed from stackoverflow
+
 
 def main():
     """
@@ -66,22 +72,27 @@ def main():
 
             while True:
                 time.sleep(0.04)
-                with state_lock:
-                    serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
-                    send_data(conn, serialized_data)
-                
                 try:
+                    with state_lock:
+                        serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
+                        send_data(conn, serialized_data)
+                
                     data = recv_data(conn)
                     chunk = pickle.loads(data) # receive updated chunk from client
+                    if not chunk:
+                        continue
                     gameboard.get_player(id).set_chunk(chunk)
                     
                     with state_lock:        
                         check_player_collisions()
                         check_other_collisions(gameboard.get_player(id))
                 except KeyError:
-                    # means the player died because gameboard.get_player(id) will crash, so exit gracefully
-                    send_data(conn, b"disconnect")
-                    break
+                    # means the player died because gameboard.get_player(id) will crash, so respawn
+                    # create a new player with the same id
+                    # send_data(conn, b"disconnect")
+                    time.sleep(2)
+                    player = Player(name=id, unique_id=id)
+                    gameboard.add_player(player)
                 # TODO: find out when client disconnects and exit out this loop
             print(f"Player disconnected with id {id}")
                     
@@ -164,8 +175,7 @@ def main():
             num_virus = len(gameboard.get_objects()) - num_food
             
             with state_lock:
-                if len(gameboard.get_objects()) < 60:
-                    # print("number of objects: ", len(gameboard.get_objects()))
+                if len(gameboard.get_objects()) < 800:
                     iterations += 1 
                     if num_food < MAX_FOOD_IN_GAME:
                         for _ in range(num_players):
