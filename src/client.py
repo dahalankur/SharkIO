@@ -13,7 +13,7 @@ from server import send_data, recv_data
 from os import listdir
 from random import choice
 
-FPS = 30
+FPS = 44
 WHITE = pygame.Color(255, 255, 255)
 
 

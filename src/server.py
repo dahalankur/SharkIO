@@ -66,9 +66,9 @@ def main():
             print(f"Connected by {addr} with id {id}")
             
             # get player's name
-            data = recv_data(conn)
-            if data:
-                player.set_name(data.decode('utf-8'))
+            name = recv_data(conn).decode('utf-8')
+            if name:
+                player.set_name(name)
 
             while True:
                 time.sleep(0.04)
@@ -91,7 +91,7 @@ def main():
                     # create a new player with the same id
                     # send_data(conn, b"disconnect")
                     time.sleep(2)
-                    player = Player(name=id, unique_id=id)
+                    player = Player(name=name, unique_id=id)
                     gameboard.add_player(player)
                 # TODO: find out when client disconnects and exit out this loop
             print(f"Player disconnected with id {id}")
