@@ -7,7 +7,8 @@ from gameobject import GameObject
 from chunk import Chunk
 from constants import PLAYER_RADIUS, RED, PLAYER_VELOCITY, BOARD_WIDTH, BOARD_HEIGHT
 from random import randint, choice
-from pygame import Color
+from pygame import Color, image, transform
+from os import listdir
 
 class Player():
     """
@@ -90,6 +91,32 @@ class Player():
         Returns the chunk associated with the player
         """
         return self.__chunk
+      
+    def get_image(self):
+        """
+        Returns the image of the player
+        """
+        return self.__shark_image
+    
+    def get_shark(self):
+        """
+        Returns the shark associated with the player based on the id of the
+        player.
+        """
+        # get number of sharks in image folder
+        shark_images_dir = listdir("../shark_images")
+        num_sharks = len(shark_images_dir)
+
+        # get the shark image
+        shark_image_name = "../shark_images/" + shark_images_dir[self.__unique_id % num_sharks]
+
+        # load the shark image
+        shark_image = image.load(shark_image_name)
+
+        # return the shark image
+        return shark_image
+        
+
 
 def tests():
     chunk1 = Chunk(0, 0, 10, 'blue', 1, 4, 7)
