@@ -18,20 +18,20 @@ import struct
 
 # Note: the send_data, recv_data, and recvall methods were inspired by the 
 # post on stackoverflow. The posts are cited in our notes/bugs.txt file 
-def send_data(conn, msg):
+def send_data(conn, data):
     """
     Given a socket and binary data, sends the data to the connections listening
     to that socket
     """
-    msg = struct.pack('>I', len(msg)) + msg
-    conn.sendall(msg)
+    data = struct.pack('>I', len(data)) + data
+    conn.sendall(data)
 
 def recv_data(sock):
     # Read message length and unpack it into an integer
-    raw_msglen = recvall(sock, 4)
-    if not raw_msglen:
+    data_len = recvall(sock, 4)
+    if not data_len:
         return None
-    msglen = struct.unpack('>I', raw_msglen)[0]
+    msglen = struct.unpack('>I', data_len)[0]
     # Read the message data
     return recvall(sock, msglen)
 
