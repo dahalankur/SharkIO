@@ -66,9 +66,9 @@ def main():
             print(f"Connected by {addr} with id {id}")
             
             # get player's name
-            data = recv_data(conn)
-            if data:
-                player.set_name(data.decode('utf-8'))
+            name = recv_data(conn).decode('utf-8')
+            if name:
+                player.set_name(name)
 
             while True:
                 time.sleep(0.04)
@@ -91,7 +91,7 @@ def main():
                     # create a new player with the same id
                     # send_data(conn, b"disconnect")
                     time.sleep(2)
-                    player = Player(name=id, unique_id=id)
+                    player = Player(name=name, unique_id=id)
                     gameboard.add_player(player)
                 # TODO: find out when client disconnects and exit out this loop
             print(f"Player disconnected with id {id}")
@@ -108,17 +108,18 @@ def main():
                 # invariant: p2 always has higher score than p1
                 p1_chunk = p1.get_chunk()
                 p2_chunk = p2.get_chunk()
-                if p1_chunk.is_colliding(p2_chunk):
-                    # kill p1
-                    # print(f"Before death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
-                    p2_chunk.increase_radius(p1_chunk.get_radius())
-                    p2_chunk.set_score(p2_chunk.get_score() + p1_chunk.get_score())
-                    p2.set_chunk(p2_chunk)
-                    gameboard.get_players()[p2.get_id()] = p2
-                    gameboard.remove_player(p1)
-                    # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
-                    # print(f"According to the gameboard, p2's score is {gameboard.get_player(p2.get_id()).get_score()}")
-                    # for some reason, this does not update when player is smaller than another player and is eaten -- the bigger player does not gain score or radius
+                with state_lock:
+                    if p1_chunk.is_colliding(p2_chunk):
+                        # kill p1
+                        # print(f"Before death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
+                        p2_chunk.increase_radius(p1_chunk.get_radius())
+                        p2_chunk.set_score(p2_chunk.get_score() + p1_chunk.get_score())
+                        p2.set_chunk(p2_chunk)
+                        gameboard.get_players()[p2.get_id()] = p2
+                        gameboard.remove_player(p1)
+                        # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
+                        # print(f"According to the gameboard, p2's score is {gameboard.get_player(p2.get_id()).get_score()}")
+                        # for some reason, this does not update when player is smaller than another player and is eaten -- the bigger player does not gain score or radius
 
     
     def check_other_collisions(player):
