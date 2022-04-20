@@ -18,22 +18,20 @@ import struct
 
 # Note: the send_data, recv_data, and recvall methods were inspired by the 
 # post on stackoverflow. The posts are cited in our notes/bugs.txt file 
-def send_data(conn, data):
+def send_data(conn, msg):
     """
     Given a socket and binary data, sends the data to the connections listening
     to that socket
     """
-    bytes_size = len(data)
-    packed_size_4_bytes = struct.pack('I', bytes_size)
-    conn.sendall(packed_size_4_bytes)
-    conn.sendall(data)
+    msg = struct.pack('>I', len(msg)) + msg
+    conn.sendall(msg)
 
 def recv_data(sock):
     # Read message length and unpack it into an integer
     raw_msglen = recvall(sock, 4)
     if not raw_msglen:
         return None
-    msglen = struct.unpack('I', raw_msglen)[0]
+    msglen = struct.unpack('>I', raw_msglen)[0]
     # Read the message data
     return recvall(sock, msglen)
 
@@ -81,15 +79,20 @@ def main():
                 
                     data = recv_data(conn)
                     chunk = pickle.loads(data) # receive updated chunk from client
+                    if not chunk:
+                        continue
                     gameboard.get_player(id).set_chunk(chunk)
                     
                     with state_lock:        
                         check_player_collisions()
                         check_other_collisions(gameboard.get_player(id))
                 except KeyError:
-                    # means the player died because gameboard.get_player(id) will crash, so exit gracefully
-                    send_data(conn, b"disconnect")
-                    break
+                    # means the player died because gameboard.get_player(id) will crash, so respawn
+                    # create a new player with the same id
+                    # send_data(conn, b"disconnect")
+                    time.sleep(2)
+                    player = Player(name=id, unique_id=id)
+                    gameboard.add_player(player)
                 # TODO: find out when client disconnects and exit out this loop
             print(f"Player disconnected with id {id}")
                     
