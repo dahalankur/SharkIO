@@ -23,17 +23,15 @@ def send_data(conn, data):
     Given a socket and binary data, sends the data to the connections listening
     to that socket
     """
-    bytes_size = len(data)
-    packed_size_4_bytes = struct.pack('I', bytes_size)
-    conn.sendall(packed_size_4_bytes)
+    data = struct.pack('>I', len(data)) + data
     conn.sendall(data)
 
 def recv_data(sock):
     # Read message length and unpack it into an integer
-    raw_msglen = recvall(sock, 4)
-    if not raw_msglen:
+    data_len = recvall(sock, 4)
+    if not data_len:
         return None
-    msglen = struct.unpack('I', raw_msglen)[0]
+    msglen = struct.unpack('>I', data_len)[0]
     # Read the message data
     return recvall(sock, msglen)
 
