@@ -75,19 +75,19 @@ def run_client():
                 # a check for seeing if that object is in the player's view or not goes here. maybe we do not need an explicit camera, we could calculate the render rectangle dynamically every time
                 pygame.draw.circle(screen, object.get_color(), object.get_pos(), object.get_radius())
 
-        # Draw the players
-        for p in players.values():
-            p_chunk = p.get_chunk()
+            # Draw the players
+            for p in players.values():
+                p_chunk = p.get_chunk()
 
-            bg_circle = pygame.draw.circle(screen, p_chunk.get_color(), p_chunk.get_pos(), p_chunk.get_radius())
+                bg_circle = pygame.draw.circle(screen, p_chunk.get_color(), p_chunk.get_pos(), p_chunk.get_radius())
 
-            shark_image = p.get_shark()
+                shark_image = p.get_shark()
 
-            # scale the shark image to the radius of the background circle
-            scaled_shark = pygame.transform.scale(shark_image, (p_chunk.get_radius(), p_chunk.get_radius()))
+                # scale the shark image to the radius of the background circle
+                scaled_shark = pygame.transform.scale(shark_image, (p_chunk.get_radius(), p_chunk.get_radius()))
 
-            # blit the scaled shark image to be centered on the background circle
-            screen.blit(scaled_shark, (bg_circle.centerx - scaled_shark.get_width() / 2, bg_circle.centery - scaled_shark.get_height() / 2))
+                # blit the scaled shark image to be centered on the background circle
+                screen.blit(scaled_shark, (bg_circle.centerx - scaled_shark.get_width() / 2, bg_circle.centery - scaled_shark.get_height() / 2))
 
 
             # render score UI
