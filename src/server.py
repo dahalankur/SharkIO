@@ -108,17 +108,18 @@ def main():
                 # invariant: p2 always has higher score than p1
                 p1_chunk = p1.get_chunk()
                 p2_chunk = p2.get_chunk()
-                if p1_chunk.is_colliding(p2_chunk):
-                    # kill p1
-                    # print(f"Before death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
-                    p2_chunk.increase_radius(p1_chunk.get_radius())
-                    p2_chunk.set_score(p2_chunk.get_score() + p1_chunk.get_score())
-                    p2.set_chunk(p2_chunk)
-                    gameboard.get_players()[p2.get_id()] = p2
-                    gameboard.remove_player(p1)
-                    # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
-                    # print(f"According to the gameboard, p2's score is {gameboard.get_player(p2.get_id()).get_score()}")
-                    # for some reason, this does not update when player is smaller than another player and is eaten -- the bigger player does not gain score or radius
+                with state_lock:
+                    if p1_chunk.is_colliding(p2_chunk):
+                        # kill p1
+                        # print(f"Before death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
+                        p2_chunk.increase_radius(p1_chunk.get_radius())
+                        p2_chunk.set_score(p2_chunk.get_score() + p1_chunk.get_score())
+                        p2.set_chunk(p2_chunk)
+                        gameboard.get_players()[p2.get_id()] = p2
+                        gameboard.remove_player(p1)
+                        # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
+                        # print(f"According to the gameboard, p2's score is {gameboard.get_player(p2.get_id()).get_score()}")
+                        # for some reason, this does not update when player is smaller than another player and is eaten -- the bigger player does not gain score or radius
 
     
     def check_other_collisions(player):
