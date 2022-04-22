@@ -16,7 +16,5 @@ venv/bin/pip install -r requirements.txt > /dev/null
 
 echo "[√] Done!"
 
-# TODO: run the client
-# echo "[*] Launching the game"
-# venv/bin/python src/client.py
-
+echo "Run the server by executing the server.sh script"
+echo "After the server is up and running, you can join the server and start playing by executing the play.sh script! Have fun!"
