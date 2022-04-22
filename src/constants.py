@@ -1,11 +1,15 @@
 # declaration of constant values used in multiple files of the program
 from pygame import Color 
 
-HOST = "10.247.73.113"  # localhost
-PORT = 64414  # any port, arbitrarily picked
+HOST = "127.0.0.1"  # localhost
+PORT = 64417  # any port, arbitrarily picked
 
-BOARD_HEIGHT = 768
-BOARD_WIDTH = 1366
+BOARD_HEIGHT = 5000
+BOARD_WIDTH = 5000
+
+WINDOW_HEIGHT = 768
+WINDOW_WIDTH = 1366
+
 INIT_VIRUS_COUNT =  4
 INIT_FOOD_COUNT = 40
 FOOD_RADIUS = 2.2
@@ -20,7 +24,8 @@ GREEN = Color(0,255,0)
 RED = Color(255,0,0)
 BLUE = Color(0,0,255)
 FOOD_GENERATION_TIME = 0.2
+MAX_GAME_OBJECTS = 1100
 
 FOOD_GENERATION_ITERATIONS = 10
-MAX_FOOD_IN_GAME = 100
-MAX_VIRUS_IN_GAME = 7
+MAX_FOOD_IN_GAME = 1000
+MAX_VIRUS_IN_GAME = 20

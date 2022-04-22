@@ -4,9 +4,7 @@ Starts up a server for multiple clients to connect
 """
 import socket
 import pickle
-from constants import MAX_CONNECTIONS, HOST, PLAYER_MINIMUM_RADIUS, PORT, FOOD_RADIUS ,\
-    BLUE, FOOD_GENERATION_TIME, FOOD_GENERATION_ITERATIONS, VIRUS_RADIUS_MIN,\
-    VIRUS_RADIUS_MAX, GREEN, MAX_FOOD_IN_GAME, MAX_VIRUS_IN_GAME
+from constants import *
 from player import Player
 from threading import Thread, Lock
 from gameboard import GameBoard
@@ -73,26 +71,33 @@ def main():
             while True:
                 time.sleep(0.04)
                 try:
+                    
                     with state_lock:
                         serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
-                        send_data(conn, serialized_data)
+                    send_data(conn, serialized_data)
                 
                     data = recv_data(conn)
+                    if not data:
+                        continue
                     chunk = pickle.loads(data) # receive updated chunk from client
                     if not chunk:
                         continue
                     gameboard.get_player(id).set_chunk(chunk)
                     
-                    with state_lock:        
-                        check_player_collisions()
-                        check_other_collisions(gameboard.get_player(id))
+                    # Functions handle dataraces
+                    check_player_collisions()
+                    check_other_collisions(gameboard.get_player(id))
                 except KeyError:
                     # means the player died because gameboard.get_player(id) will crash, so respawn
                     # create a new player with the same id
                     # send_data(conn, b"disconnect")
-                    time.sleep(2)
+                    time.sleep(2) # TODO: test this, race condition
                     player = Player(name=name, unique_id=id)
                     gameboard.add_player(player)
+                except BrokenPipeError:
+                    break
+                except ConnectionResetError:
+                    break
                 # TODO: find out when client disconnects and exit out this loop
             print(f"Player disconnected with id {id}")
                     
@@ -113,8 +118,7 @@ def main():
                         # kill p1
                         # print(f"Before death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
                         p2_chunk.increase_radius(p1_chunk.get_radius())
-                        p2_chunk.set_score(p2_chunk.get_score() + p1_chunk.get_score())
-                        p2.set_chunk(p2_chunk)
+                        # p2.set_chunk(p2_chunk)
                         gameboard.get_players()[p2.get_id()] = p2
                         gameboard.remove_player(p1)
                         # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
@@ -136,15 +140,12 @@ def main():
                     if (chunk.get_radius() - size_change) > PLAYER_MINIMUM_RADIUS:
 
                         chunk.set_radius(chunk.get_radius() - size_change) # reduce by 25% -4 
-                        chunk.set_score(chunk.get_score() - size_change)
                     else: # set to minimum size
                         chunk.set_radius(PLAYER_MINIMUM_RADIUS)
-                        chunk.set_score(0)
         
                     gameboard.remove_object(other)
                 elif other.is_food():
                     gameboard.remove_object(other)
-                    chunk.set_score(chunk.get_score() + 2) 
                     chunk.increase_radius(2)
 
     
@@ -176,7 +177,7 @@ def main():
             num_virus = len(gameboard.get_objects()) - num_food
             
             with state_lock:
-                if len(gameboard.get_objects()) < 800:
+                if len(gameboard.get_objects()) < MAX_GAME_OBJECTS:
                     iterations += 1 
                     if num_food < MAX_FOOD_IN_GAME:
                         for _ in range(num_players):
