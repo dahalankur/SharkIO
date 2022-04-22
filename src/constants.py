@@ -1,7 +1,7 @@
 # declaration of constant values used in multiple files of the program
 from pygame import Color 
 
-HOST = "127.0.0.1"  # localhost
+HOST = "10.5.3.216"  # localhost
 PORT = 64417  # any port, arbitrarily picked
 
 BOARD_HEIGHT = 5000

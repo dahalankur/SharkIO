@@ -73,7 +73,9 @@ def main():
                 try:
                     
                     with state_lock:
-                        serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
+                        # get local object data 
+                        serialized_data = pickle.dumps((gameboard.get_objects_for_player(id), gameboard.get_players(), gameboard.get_player(id)))
+                        # serialized_data = pickle.dumps((gameboard.get_objects(), gameboard.get_players(), gameboard.get_player(id)))
                     send_data(conn, serialized_data)
                 
                     data = recv_data(conn)

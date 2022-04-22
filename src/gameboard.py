@@ -31,6 +31,18 @@ class GameBoard():
         with self.__lock:
             return (self.__objects, self.__players, self.__width, self.__height, self.__unique_id)
 
+    def get_objects_for_player(self, id):
+        player = self.__players[id]
+        objects = dict()
+        # Create a BOX around the player, return objects in the box
+        width, height = WINDOW_WIDTH, WINDOW_HEIGHT
+        x, y = player.get_chunk().get_pos()
+        for key, object in self.__objects.items():
+            objx, objy = object.get_pos()
+            if (objx > x - width/2 and objx < x + width/2 and
+                objy > y - height/2 and objy < y + height/2):
+                objects[key] = object
+        return objects
 
     def get_height(self):
         """
