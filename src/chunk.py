@@ -5,7 +5,7 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 from gameobject import GameObject
-from constants import MIN_VELOCITY
+from constants import MIN_VELOCITY, PLAYER_MINIMUM_RADIUS
 import math
 
 class Chunk(GameObject):
@@ -30,13 +30,13 @@ class Chunk(GameObject):
       """
       Returns the score of the chunk
       """
-      return self.__score
+      return self.get_radius() - PLAYER_MINIMUM_RADIUS
     
-    def set_score(self, score):
-      """
-      Sets the score of the chunk
-      """
-      self.__score = max(0, score) # do not let score be negative
+    # def set_score(self, score):
+    #   """
+    #   Sets the score of the chunk
+    #   """
+    #   self.__score = max(0, score) # do not let score be negative
 
     def increase_radius(self, size):
         self.set_radius(size + self.get_radius())
