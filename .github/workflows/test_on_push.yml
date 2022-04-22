@@ -13,8 +13,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install pygame
         run: python3 -m pip install pygame
-      - name: camera.py
-        run: python3 src/camera.py
       - name: chunk.py
         run: python3 src/chunk.py
       - name: gameboard.py
