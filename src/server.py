@@ -90,8 +90,7 @@ def main():
                 except KeyError:
                     # means the player died because gameboard.get_player(id) will crash, so respawn
                     # create a new player with the same id
-                    # send_data(conn, b"disconnect")
-                    time.sleep(2) # TODO: test this, race condition
+                    time.sleep(2)
                     player = Player(name=name.decode('utf-8'), unique_id=id)
                     gameboard.add_player(player)
                 except BrokenPipeError:
@@ -117,14 +116,9 @@ def main():
                 with state_lock:
                     if p1_chunk.is_colliding(p2_chunk):
                         # kill p1
-                        # print(f"Before death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
                         p2_chunk.increase_radius(p1_chunk.get_radius())
-                        # p2.set_chunk(p2_chunk)
                         gameboard.get_players()[p2.get_id()] = p2
                         gameboard.remove_player(p1)
-                        # print(f"After death of p1, p2's score is {p2.get_score()} and radius is {p2_chunk.get_radius()}")
-                        # print(f"According to the gameboard, p2's score is {gameboard.get_player(p2.get_id()).get_score()}")
-                        # for some reason, this does not update when player is smaller than another player and is eaten -- the bigger player does not gain score or radius
 
     
     def check_other_collisions(player):
@@ -164,6 +158,7 @@ def main():
                 Thread(target=start_new_player, args=(conn, addr, id)).start()
                 id += 1
 
+
     def generate_food():
         iterations = 1
         while True:
@@ -172,8 +167,6 @@ def main():
             for object in gameboard.get_objects().values():
                 if object.is_food():
                     num_food += 1
-                # if object.is_virus(): 
-                #     num_virus += 1
             
             num_virus = len(gameboard.get_objects()) - num_food
             
@@ -198,16 +191,14 @@ def main():
         Generates initial gameboard state and starts up a server that listens
         for connections
         """
-        Thread(target= generate_food, args = ()).start() # TODO: check that we SLEEP
+        Thread(target= generate_food, args = ()).start() 
         gameboard.gen_init_state()
-        listen_for_connections() # TODO: LOCK CONNECTION
+        listen_for_connections()
     
     state_lock = Lock()
     gameboard = GameBoard()
     startup()
           
-
-
 
 if __name__ == "__main__":
     main()

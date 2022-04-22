@@ -3,12 +3,10 @@ player.py
 Implements a Player class
 Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
-from gameobject import GameObject
 from chunk import Chunk
-from constants import PLAYER_RADIUS, RED, PLAYER_VELOCITY, BOARD_WIDTH, BOARD_HEIGHT
-from random import randint, choice
-from pygame import Color, transform
-from os import listdir
+from constants import PLAYER_RADIUS, PLAYER_VELOCITY, BOARD_WIDTH, BOARD_HEIGHT
+from random import randint
+from pygame import Color
 
 class Player():
     """

@@ -24,7 +24,6 @@ class Chunk(GameObject):
         super().__init__(pos_x, pos_y, radius, color, type, id)
         self.__velocity = velocity
         self.__sub_id = sub_id
-        self.__score = 0
     
     def get_score(self):
       """
@@ -46,7 +45,7 @@ class Chunk(GameObject):
         Set the velocity of the Chunk instance to the velocity supplied as the
         argument
         """
-        self.__velocity = velocity
+        self.__velocity = velocity # TODO: i dont think we need set_velocity
 
     def get_id(self):
         """

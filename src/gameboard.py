@@ -8,14 +8,7 @@ import uuid
 from random import randint
 from gameobject import GameObject
 from threading import Lock
-from constants import (BOARD_HEIGHT,
-                       BOARD_WIDTH, FOOD_RADIUS,
-                       INIT_VIRUS_COUNT,
-                       INIT_FOOD_COUNT,
-                       VIRUS_RADIUS_MIN,
-                       VIRUS_RADIUS_MAX,
-                       GREEN,
-                       BLUE)
+from constants import *
 
 class GameBoard():
     """
