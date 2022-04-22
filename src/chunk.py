@@ -31,12 +31,6 @@ class Chunk(GameObject):
       Returns the score of the chunk
       """
       return self.get_radius() - PLAYER_MINIMUM_RADIUS
-    
-    # def set_score(self, score):
-    #   """
-    #   Sets the score of the chunk
-    #   """
-    #   self.__score = max(0, score) # do not let score be negative
 
     def increase_radius(self, size):
         self.set_radius(size + self.get_radius())
@@ -77,10 +71,6 @@ def tests():
     assert(player3.get_id() == "3:3")
     assert(player1.get_id() == "1:1")
     assert(player2.get_id() == "2:1")
-
-    # assert(player1.get_velocity() == 5.3)
-    # assert(player2.get_velocity() == 5)
-    # assert(player3.get_velocity() == 1)
 
     print("Passed")
 

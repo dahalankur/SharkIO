@@ -56,12 +56,6 @@ class Player():
       """
       return self.__chunk.get_score()
     
-    def set_score(self, score):
-      """
-      Sets the score of the player
-      """
-      self.__chunk.set_score(max(0, score))
-    
     def get_id(self):
       """
       Returns the unique id of the player
@@ -111,12 +105,6 @@ def tests():
     assert(player2.get_chunk().get_color() == 'red')
 
     assert(player1.get_name() == "A")
-
-    player1.set_score(92)
-    player2.set_score(-2)
-    
-    assert(player1.get_score() == 92)
-    assert(player2.get_score() == 0)
 
     print("Passed")
 
