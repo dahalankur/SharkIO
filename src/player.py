@@ -6,7 +6,8 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 from chunk import Chunk
 from constants import PLAYER_RADIUS, PLAYER_VELOCITY, BOARD_WIDTH, BOARD_HEIGHT
 from random import randint
-from pygame import Color
+from pygame import Color, image, transform
+from os import listdir
 
 class Player():
     """
@@ -26,6 +27,8 @@ class Player():
         self.__camera_view = camera_view
         self.__name = name
         self.__unique_id = unique_id
+
+        self.__shark_as_string = image.tostring(self.generate_shark(self.__unique_id), 'RGB')
       
     def __get_random_color(self):
       valid = False
@@ -83,6 +86,33 @@ class Player():
         Returns the chunk associated with the player
         """
         return self.__chunk
+
+    def generate_shark(self, id):
+        """
+        Returns the shark associated with the player based on the id of the
+        player.
+        """
+        # get number of sharks in image folder
+        shark_images_dir = listdir("../shark_images")
+        num_sharks = len(shark_images_dir)
+
+        # get the shark image
+        shark_image_name = "../shark_images/" + shark_images_dir[id % num_sharks]
+
+        # load the shark image
+        shark_image = transform.scale(image.load(shark_image_name), (100, 100))
+
+        # return the shark image
+        return shark_image
+
+    def get_shark_as_image(self, dimensions):
+        """
+        Returns the shark associated with the player based on the id of the
+        player.
+        """
+        return transform.scale(image.fromstring(self.__shark_as_string, (100, 100), 'RGB'), dimensions)
+
+
         
 
 

@@ -34,24 +34,6 @@ def init_pygame():
     
     return display, clock, font, font2, world
 
-def generate_shark(id):
-        """
-        Returns the shark associated with the player based on the id of the
-        player.
-        """
-        # get number of sharks in image folder
-        shark_images_dir = listdir("../shark_images")
-        num_sharks = len(shark_images_dir)
-
-        # get the shark image
-        shark_image_name = "../shark_images/" + shark_images_dir[id % num_sharks]
-
-        # load the shark image
-        shark_image = pygame.image.load(shark_image_name)
-
-        # return the shark image
-        return shark_image
-
 def render_scores(font, font2, player, display, players):
     text = font.render("Score: " + str(int(player.get_score())), True, (255, 0, 0))
     display.blit(text, (30, 700))
@@ -86,19 +68,11 @@ def run_client():
 
         display, clock, font, font2, world = init_pygame()
         running = True
-
-        firstRun = True
-        SHARK_IMAGE = None
         
         while running:
             data = recv_data(sock)
             (objects_dict, players, player) = pickle.loads(data)
-
-            if firstRun:
-                firstRun = False
-                SHARK_IMAGE = generate_shark(player.get_id())
             
-
             clock.tick(FPS)
             
             display.fill(BLACK) 
@@ -143,7 +117,7 @@ def run_client():
                 bg_circle = pygame.draw.circle(world, p_chunk.get_color(), p_chunk.get_pos(), p_chunk.get_radius())
 
                 # scale the shark image to the radius of the background circle
-                scaled_shark = pygame.transform.scale(SHARK_IMAGE, (p_chunk.get_radius(), p_chunk.get_radius()))
+                scaled_shark = p.get_shark_as_image((p_chunk.get_radius(), p_chunk.get_radius()))
 
                 # blit the scaled shark image to be centered on the background circle
                 world.blit(scaled_shark, (bg_circle.centerx - scaled_shark.get_width() / 2, bg_circle.centery - scaled_shark.get_height() / 2))
