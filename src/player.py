@@ -112,10 +112,6 @@ class Player():
         """
         return transform.scale(image.fromstring(self.__shark_as_string, (100, 100), 'RGB'), dimensions)
 
-
-        
-
-
 def tests():
     chunk1 = Chunk(0, 0, 10, 'blue', 1, 4, 7)
     chunk2 = Chunk(0, 1, 10, 'red', 2, 5, 8)
