@@ -1,7 +1,17 @@
 # SharkIO
 ### Similar to Agar.io, but sharks! Implemented for Mark Sheldon's CS21 Concurrency Course
 
-Run:
+Run setup using:
+
+ ./setup.sh
+ 
+ Run server using:
+ 
+ ./server.sh
+ 
+ Run game using:
+ 
+ ./play.sh
 
 
 How to Play:
