@@ -68,8 +68,11 @@ def run_client():
         sock.connect((HOST, PORT))
 
         # send player name to the server
-        name = bytes(input("Enter your name: ").encode('utf-8'))
-        send_data(sock, name)
+        valid_name = False
+        while not valid_name:
+            name = input("Enter your name: ")
+            if 1 <= len(name) <= 10: valid_name = True
+        send_data(sock, bytes(name.encode('utf-8')))
 
         display, clock, font, font2, world = init_pygame()
         running = True
