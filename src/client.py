@@ -70,7 +70,7 @@ def run_client():
         # send player name to the server
         valid_name = False
         while not valid_name:
-            name = input("Enter your name: ")
+            name = input("Enter your name (maximum 10 characters): ")
             if 1 <= len(name) <= 10: valid_name = True
         send_data(sock, bytes(name.encode('utf-8')))
 
