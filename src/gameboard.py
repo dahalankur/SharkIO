@@ -153,7 +153,7 @@ def tests():
     # Create a new gameobject
     virus = GameObject(0, 0, 10, 'red', 'virus', uuid.uuid4())
     food  = GameObject(0, 0, 10, 'green', 'food', uuid.uuid4())
-    chunk = GameObject(0, 0, 10, 'blue', 'chunk', uuid.uuid4())
+    chunk = GameObject(0, 0, 10, 'blue', 'chunk', 1)
     
     # Add the game objects to the gameboard
     gb.add_object(virus)
@@ -176,8 +176,8 @@ def tests():
     assert(objects[chunk.get_id()].get_type() == 'chunk')
     
     # Test that players can be added to the gameboard
-    player1 = Player(unique_id = uuid.uuid4())
-    player2 = Player(unique_id = uuid.uuid4())
+    player1 = Player(unique_id = 2)
+    player2 = Player(unique_id = 3)
     # Add the players to the gameboard
     gb.add_player(player1)
     assert(len (gb.get_players()) == 1)
