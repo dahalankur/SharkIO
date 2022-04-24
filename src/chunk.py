@@ -26,10 +26,10 @@ class Chunk(GameObject):
         self.__sub_id = sub_id
     
     def get_score(self):
-      """
-      Returns the score of the chunk
-      """
-      return self.get_radius() - PLAYER_MINIMUM_RADIUS
+        """
+        Returns the score of the chunk
+        """
+        return self.get_radius() - PLAYER_MINIMUM_RADIUS
 
     def increase_radius(self, size):
         self.set_radius(size + self.get_radius())
@@ -45,7 +45,7 @@ class Chunk(GameObject):
         Set the velocity of the Chunk instance to the velocity supplied as the
         argument
         """
-        self.__velocity = velocity # TODO: i dont think we need set_velocity
+        self.__velocity = velocity
 
     def get_id(self):
         """

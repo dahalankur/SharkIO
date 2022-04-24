@@ -1,5 +1,7 @@
 """
 client.py
+Launches the game and establishes connection to the server
+Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 """
 
 import pygame
@@ -7,12 +9,10 @@ import socket
 import pickle
 from constants import *
 from server import send_data, recv_data
-from os import listdir
 
 FPS = 60
 WHITE = pygame.Color(255, 255, 255)
 BLACK = pygame.Color(0, 0, 0)
-padding = 100 
 
 def init_pygame():
     """
@@ -35,10 +35,15 @@ def init_pygame():
     return display, clock, font, font2, world
 
 def render_scores(font, font2, player, display, players):
-    text = font.render("Score: " + str(int(player.get_score())), True, (255, 0, 0))
+    """
+    Takes in a couple of fonts, the player instance, the display to render 
+    on and a list of players and renders the score of the current player and 
+    leaderboard on the display
+    """
+    text = font.render("Score: " + str(int(player.get_score())), True, \
+                       (255, 0, 0))
     display.blit(text, (30, 700))
 
-    # render leaderboard
     loc = 20
     leader_txt = 'Leaderboard'
     text2 = font2.render(leader_txt, True, (255, 0, 0))
@@ -48,8 +53,9 @@ def render_scores(font, font2, player, display, players):
     players_list.sort(key=lambda x: x.get_score(), reverse=True)
 
     for player in players_list:
-        loc = loc + 15
-        leader_txt2 = str(player.get_name()) + ": " + str(int(player.get_score()))
+        loc += 15
+        leader_txt2 = str(player.get_name()) + ": " + \
+                      str(int(player.get_score()))
         text3 = font2.render(leader_txt2, True, (255, 0, 0))
         display.blit(text3, (1220, loc))
 
@@ -58,7 +64,6 @@ def run_client():
     Initializes pygame and renders required components for the client, 
     while also communicating game state changes to the server via sockets
     """
-
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect((HOST, PORT))
 
@@ -98,7 +103,7 @@ def run_client():
                 posy = max(0, posy - velocity)
             if key[pygame.K_s] or key[pygame.K_DOWN]:
                 posy = min(BOARD_HEIGHT, posy + velocity)
-            # Left to right motion
+            # Left and right motion
             if key[pygame.K_a] or key[pygame.K_LEFT]:
                 posx = max(0, posx - velocity)
             if key[pygame.K_d] or key[pygame.K_RIGHT]:
@@ -108,24 +113,29 @@ def run_client():
 
             # Draw the game objects
             for _, object in objects_dict.items():
-                pygame.draw.circle(world, object.get_color(), object.get_pos(), object.get_radius())
+                pygame.draw.circle(world, object.get_color(), \
+                                   object.get_pos(), object.get_radius())
 
             # Draw the players
             for p in players.values():
                 p_chunk = p.get_chunk()
 
-                bg_circle = pygame.draw.circle(world, p_chunk.get_color(), p_chunk.get_pos(), p_chunk.get_radius())
+                bg_circle = pygame.draw.circle(world, p_chunk.get_color(), \
+                            p_chunk.get_pos(), p_chunk.get_radius())
 
                 # scale the shark image to the radius of the background circle
-                scaled_shark = p.get_shark_as_image((p_chunk.get_radius(), p_chunk.get_radius()))
+                scaled_shark = p.get_shark_as_image((p_chunk.get_radius(), \
+                               p_chunk.get_radius()))
 
-                # blit the scaled shark image to be centered on the background circle
-                world.blit(scaled_shark, (bg_circle.centerx - scaled_shark.get_width() / 2, bg_circle.centery - scaled_shark.get_height() / 2))
+                # blit the scaled shark image to be centered on the background
+                world.blit(scaled_shark, (bg_circle.centerx - \
+                           scaled_shark.get_width() / 2, bg_circle.centery - \
+                           scaled_shark.get_height() / 2))
             
             
-            display.blit(world, (camera_x, camera_y)) # Render Map To The Display
+            display.blit(world, (camera_x, camera_y)) # Render map to display
             
-            # render score UI
+            # render score and leaderboard UI
             render_scores(font, font2, player, display, players)
 
             pygame.display.update() 

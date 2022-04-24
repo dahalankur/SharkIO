@@ -14,11 +14,11 @@ jobs:
       - name: Install pygame
         run: python3 -m pip install pygame
       - name: chunk.py
-        run: python3 src/chunk.py
+        run: cd src && python3 chunk.py
       - name: gameboard.py
-        run: python3 src/gameboard.py
+        run: cd src && python3 gameboard.py
       - name: gameobject.py
-        run: python3 src/gameobject.py
+        run: cd src && python3 gameobject.py
       - name: player.py
-        run: python3 src/player.py
+        run: cd src && python3 player.py
       

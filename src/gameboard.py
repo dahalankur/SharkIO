@@ -29,12 +29,16 @@ class GameBoard():
         Return a dict of all game objects and players
         """
         with self.__lock:
-            return (self.__objects, self.__players, self.__width, self.__height, self.__unique_id)
+            return (self.__objects, self.__players, self.__width, \
+                    self.__height, self.__unique_id)
 
     def get_objects_for_player(self, id):
+        """
+        Returns the objects present around the player that are in the viewable
+        area relative to the player position with the given id
+        """
         player = self.__players[id]
         objects = dict()
-        # Create a BOX around the player, return objects in the box
         width, height = WINDOW_WIDTH, WINDOW_HEIGHT
         x, y = player.get_chunk().get_pos()
         for key, object in self.__objects.items():
@@ -74,7 +78,6 @@ class GameBoard():
         Remove the object from the dict of objects
         """
         with self.__lock:
-            # display game over screen for
             self.__objects.pop(obj.get_id())
 
         
@@ -100,7 +103,10 @@ class GameBoard():
             self.__add_object(obj)
     
     def __add_object(self, obj):
-            self.__objects[obj.get_id()] = obj
+        """
+        Add obj to the objects dictionary
+        """
+        self.__objects[obj.get_id()] = obj
     
     def add_player(self, player):
         """
@@ -124,12 +130,13 @@ class GameBoard():
         They have to spawn within bounds of BOARD_WIDTH, BOARD_HEIGHT
         """
         with self.__lock:
-            for viruses in range(num_virus):
+            for _ in range(num_virus):
                 virus_radius = randint(VIRUS_RADIUS_MIN, VIRUS_RADIUS_MAX)
-                self.__add_object(GameObject(randint(0, self.__width), 
+                self.__add_object(GameObject(randint(0, self.__width),
                                         randint(0, self.__height),
-                                        virus_radius, GREEN, 'virus', uuid.uuid4()))
-            for foods in range(num_food):
+                                        virus_radius, GREEN, 'virus',
+                                        uuid.uuid4()))
+            for _ in range(num_food):
                 id = uuid.uuid4()
                 self.__add_object(GameObject(randint(0, self.__width), 
                                         randint(0, self.__height),
@@ -142,20 +149,24 @@ def tests():
     
     # Create a new gameboard instance
     gb = GameBoard(BOARD_WIDTH, BOARD_HEIGHT)
+    
     # Create a new gameobject
     virus = GameObject(0, 0, 10, 'red', 'virus', uuid.uuid4())
     food  = GameObject(0, 0, 10, 'green', 'food', uuid.uuid4())
     chunk = GameObject(0, 0, 10, 'blue', 'chunk', uuid.uuid4())
+    
     # Add the game objects to the gameboard
     gb.add_object(virus)
     gb.add_object(food)
     gb.add_object(chunk)
+    
     # Test that all 3 objects are in the gameboard
     assert(len(gb.get_objects()) == 3)
     objects = gb.get_objects()
     assert(objects[virus.get_id()] == virus)
     assert(objects[food.get_id()] == food)
     assert(objects[chunk.get_id()] == chunk)
+    
     # Test that objects can be removed from the gameboard
     gb.remove_object(virus)
     assert(len(gb.get_objects()) == 2)
@@ -163,6 +174,7 @@ def tests():
     assert(objects[food.get_id()].get_type() == 'food')
     assert(objects[chunk.get_id()] == chunk)
     assert(objects[chunk.get_id()].get_type() == 'chunk')
+    
     # Test that players can be added to the gameboard
     player1 = Player(unique_id = uuid.uuid4())
     player2 = Player(unique_id = uuid.uuid4())
@@ -174,6 +186,7 @@ def tests():
     players = gb.get_players()
     assert(players[player1.get_id()] == player1)
     assert(players[player2.get_id()] == player2)
+    
     # Test that players can be removed from the gameboard
     gb.remove_player(player1)
     assert(len (gb.get_players()) == 1)
