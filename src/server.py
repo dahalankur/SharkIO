@@ -161,7 +161,7 @@ def main():
                 id += 1
 
 
-    def generate_food():
+    def begin_object_generation():
         iterations = 1
         while True:
             num_players = len(gameboard.get_players().keys())
@@ -193,7 +193,7 @@ def main():
         Generates initial gameboard state and starts up a server that listens
         for connections
         """
-        Thread(target= generate_food, args = ()).start() 
+        Thread(target= begin_object_generation, args = ()).start() 
         gameboard.gen_init_state()
         listen_for_connections()
     
