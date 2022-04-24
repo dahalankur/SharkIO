@@ -3,13 +3,13 @@
 
 Run setup using:
 
- ./setup.sh
+  ./setup.sh
  
- Run server using:
+Run server using:
  
  ./server.sh
  
- Run game using:
+Run game using:
  
  ./play.sh
 
