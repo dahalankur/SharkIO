@@ -7,8 +7,8 @@ Authors: Ankur Dahal, Ellis Brown, Jackson Parsells, Rujen Amatya
 from pygame import Color 
 
 # constants related to networking
-HOST = "73.17.141.74"
-PORT = 64410
+HOST = "127.0.0.1"
+PORT = 64411
 MAX_CONNECTIONS = 100
 
 # the dimensions of the entire "map"
