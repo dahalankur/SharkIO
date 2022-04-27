@@ -23,7 +23,7 @@ try it for yourself!
 > Open the `src/constants.py` file, and change the HOST constant to your 
 > public ip if you want to play with other devices connected on the same 
 > network. If you want to join as multiple players from your own laptop and 
-> not from other systems, you can leave the HOST as localhost ("12.0.0.1"). 
+> not from other systems, you can leave the HOST as localhost ("127.0.0.1"). 
 > If any error related to "Address already in use" is seen, change the PORT 
 > constant in the `src/constants.py file` and try running the server again.
 
