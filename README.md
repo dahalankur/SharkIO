@@ -19,12 +19,12 @@ To run the server, go to the root project directory and execute the server scrip
 The controls are simple: once you have entered the lobby and see your tiny shark floating in the sea, use [W A S D] keys to navigate around the map. That's it! If you prefer arrow keys to move, you can use them instead. The main thing is to enjoy the game and avoid being eaten....right?
 
 
-### Folders and files and why they exist:
-- `setup.sh`: A bash script that installs all required dependencies
-- `requirements.txt`: A text file listing python dependencies used by the project
-- `server.sh`: A bash script that starts the server
-- `play.sh`: A bash script that joins the server and starts the game on the cilent's side
-- `README.md`: README file for SharkIO, contains information about how to play the game and other interesting details about the project files
+### A description of folders and files in this project:
+- `setup.sh`: A bash script that installs all required dependencies.
+- `requirements.txt`: A text file listing python dependencies used by the project.
+- `server.sh`: A bash script that starts the server.
+- `play.sh`: A bash script that joins the server and starts the game on the cilent's side.
+- `README.md`: README file for SharkIO; contains information about how to play the game and other interesting details about the project files.
 - `shark_images`: A directory containing nine shark images (pngs) that are rendered on top of player blobs when they join the game.
 - `src`: A directory that contains the python source files for SharkIO. The following files are present:
   - Source files defining classes:
