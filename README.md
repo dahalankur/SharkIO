@@ -20,7 +20,7 @@ try it for yourself!
 
 > **_Note:_** Since this game uses a client-server model, you need to connect 
 > to a host running the server in order to join the lobby and start playing. 
-> Open the `src/constants.py` file, and change the HOST variable to your 
+> Open the `src/constants.py` file, and change the HOST constant to your 
 > public ip if you want to play with other devices connected on the same 
 > network. If you want to join as multiple players from your own laptop and 
 > not from other systems, you can leave the HOST as localhost ("12.0.0.1"). 
@@ -28,7 +28,7 @@ try it for yourself!
 > constant in the `src/constants.py file` and try running the server again.
 
 To run the server, go to the root project directory and execute the server 
-script using `./server.sh`. If there are no errrors and you see a welcome 
+script using `./server.sh`. If there are no errors and you see a welcome 
 message from pygame, you should be all set! Open up another terminal window 
 and navigate to the project's root directory, and join the server as a shark 
 by executing the play script: `./play.sh`. Try joining the server from 
