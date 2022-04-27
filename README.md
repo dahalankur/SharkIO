@@ -47,7 +47,7 @@ The main thing is to enjoy the game and avoid being eaten....right?
   project.
 - `server.sh`: A bash script that starts the server.
 - `play.sh`: A bash script that joins the server and starts the game on the 
-  cilent's side.
+  client side.
 - `README.md`: README file for SharkIO; contains information about how to 
   play the game and other interesting details about the project files.
 - `shark_images`: A directory containing eight shark images (pngs) that are 
