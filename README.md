@@ -16,7 +16,7 @@ directory of the project; make sure you execute it from the root directory.
 > to manually install them by using `pip3 install -r requirements.txt`.
 
 Once the required packages are installed, it is now time to run the game and 
-try it for yourself!
+try it yourself!
 
 > **_Note:_** Since this game uses a client-server model, you need to connect 
 > to a host running the server in order to join the lobby and start playing. 
@@ -41,7 +41,7 @@ shark floating in the sea, use [W A S D] keys to navigate around the map.
 That's it! If you prefer arrow keys to move, you can use them instead. 
 The main thing is to enjoy the game and avoid being eaten....right?
 
-### A description of folders and files in this project:
+### Description of folders and files in this project:
 - `setup.sh`: A bash script that installs all required dependencies.
 - `requirements.txt`: A text file listing python dependencies used by the 
   project.
@@ -50,7 +50,7 @@ The main thing is to enjoy the game and avoid being eaten....right?
   cilent's side.
 - `README.md`: README file for SharkIO; contains information about how to 
   play the game and other interesting details about the project files.
-- `shark_images`: A directory containing nine shark images (pngs) that are 
+- `shark_images`: A directory containing eight shark images (pngs) that are 
   rendered on top of player blobs when they join the game.
 - `src`: A directory that contains the python source files for SharkIO. 
   The following files are present:
