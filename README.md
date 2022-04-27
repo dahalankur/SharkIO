@@ -89,5 +89,5 @@ The main thing is to enjoy the game and avoid being eaten....right?
         changes to the state to the connected client via websockets.
     - `client.py`: This file is responsible for establishing a connection 
         to the server via websockets, receive the gameboard state data, 
-        render the required output on the client's window and communicate 
-        the player's position change to the server via websockets.
+        render the required output on the client's window using the pygame module 
+        and communicate the player's position change to the server via websockets.
