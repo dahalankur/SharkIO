@@ -28,11 +28,11 @@ The controls are simple: once you have entered the lobby and see your tiny shark
 - `shark_images`: A directory containing nine shark images (pngs) that are rendered on top of player blobs when they join the game.
 - `src`: A directory that contains the python source files for SharkIO. The following files are present:
   - Source files defining classes:
-    - `gameboard.py`:
-    - `gameobject.py`:
-    - `player.py`:
-    - `chunk.py`:
+    - `chunk.py`: This file defines a `Chunk` class, which inherits from the `GameObject` class (described below). Each player has its own chunk, and the chunk stores data about the player's position, current score, velocity, etc.
+    - `player.py`: This file defines a `Player` class, an instance of which represents a player and contains data about its avatar (i.e., its shark image), and the chunk (instance of the `Chunk` class) associated with the player.
+    - `gameobject.py`: This file defines a `GameObject` class, an instance of which represents a drawable object that can either be a player's chunk (instance of the `Chunk` class), a virus, or a food. It stores data about the game object, including their radius, color, and their unique identifier.
+    - `gameboard.py`: This file defines a `GameBoard` class, an instance of which represents a game board. It stores data about the overall game state, including the players (instances of the `Player` class) and game objects (instances of the `GameObject` class of type food and virus) present on the map and their locations.
   - Other source files that interact with the classes and help run the game:
-    - `constants.py`:
-    - `server.py`:
-    - `client.py`:
+    - `constants.py`: This file defines constants used throughout the project. Source files that require certain constants will import them as necessary from this file. Having a separate file for constants ensures that we do not get multiple copies of constants that are different from one another.
+    - `server.py`: This file is mainly responsible for opening and listening for connections actively on its main thread via websockets, and spawning client threads once it detects that a client has asked to join the server. One `GameBoard` instance is created and the game begins: each client will have its own thread running (until the client disconnects) which will perform collision detection and update the gameboard state as necessary, and communicate the changes to the state to the connected client via websockets.
+    - `client.py`: This file is responsible for establishing a connection to the server via websockets, receive the gameboard state data, render the required output on the client's window and communicate the player's position change to the server via websockets.
